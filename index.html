@@ -10,350 +10,497 @@
 @font-face { font-family:'Garet'; src:url('./Spacetype - Garet Book.otf') format('opentype'); }
 
 :root{
---bg:#d6283f;
---glass: rgba(255,255,255,0.18);
---border: rgba(255,255,255,0.22);
+  --bg:#d6283f;
+  --glass: rgba(255,255,255,0.18);
+  --border: rgba(255,255,255,0.22);
 }
 
-html, body{
-height:100%;
-margin:0;
-overflow:hidden;
-}
-
+html, body{ height:100%; margin:0; overflow:hidden; }
 *{ box-sizing:border-box; }
 
 body{
-font-family:'Garet', sans-serif;
-background:var(--bg);
-color:white;
-height:100dvh;
-width:100vw;
-position:relative;
-padding:22px;
+  font-family:'Garet', sans-serif;
+  background:var(--bg);
+  color:white;
+  height:100dvh;
+  width:100vw;
+  position:relative;
+  padding:22px;
 }
 
-/* EMOJIS */
+/* EMOJIS FLOTANDO */
 .hearts{
-position:fixed;
-inset:0;
-pointer-events:none;
-overflow:hidden;
-z-index:1;
+  position:fixed; inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:1;
 }
 .heart{
-position:absolute;
-bottom:-40px;
-font-size:22px;
-animation:subir linear infinite;
+  position:absolute;
+  bottom:-40px;
+  font-size:22px;
+  animation:subir linear infinite;
 }
 @keyframes subir{
-from{transform:translateY(0); opacity:0.7;}
-to{transform:translateY(-120vh); opacity:0;}
+  from{transform:translateY(0); opacity:0.7;}
+  to{transform:translateY(-120vh); opacity:0;}
 }
 
 /* HEADER */
 .header{
-position:fixed;
-top: calc(14px + env(safe-area-inset-top));
-left:0;
-right:0;
-text-align:center;
-z-index:5;
+  position:fixed;
+  top: calc(14px + env(safe-area-inset-top));
+  left:0; right:0;
+  text-align:center;
+  z-index:5;
+  padding:0 14px;
 }
 .header h1{
-font-family:'Agrandir', sans-serif;
-margin:0;
-font-size:clamp(24px,7vw,44px);
+  font-family:'Agrandir', sans-serif;
+  margin:0;
+  font-size:clamp(24px,7vw,44px);
+  line-height:1.05;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
 /* CENTER */
 .center{
-height:100%;
-display:flex;
-align-items:center;
-justify-content:center;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 /* MAIN BOX */
 .caja{
-width:min(700px, calc(100% - 18px));
-background:var(--glass);
-padding:24px;
-border-radius:22px;
-text-align:center;
-border:1px solid var(--border);
-box-shadow:
-0 0 10px rgba(255,255,255,0.18),
-0 0 26px rgba(255,255,255,0.12),
-0 18px 60px rgba(0,0,0,0.35);
+  width:min(700px, calc(100% - 18px));
+  background:var(--glass);
+  padding:24px;
+  border-radius:22px;
+  text-align:center;
+  border:1px solid var(--border);
+  box-shadow:
+    0 0 10px rgba(255,255,255,0.18),
+    0 0 26px rgba(255,255,255,0.12),
+    0 18px 60px rgba(0,0,0,0.35);
 }
 
+/* TEXTO CARTA */
 .texto{
-font-size:clamp(18px,4.8vw,20px);
-line-height:1.55;
-min-height:96px;
+  font-size:clamp(18px,4.8vw,20px);
+  line-height:1.55;
+  white-space:pre-wrap;      /* ✅ respeta saltos de línea */
+  margin:0;
+  min-height:140px;          /* ✅ más alto para 3 párrafos */
 }
 
-/* CONTINUAR */
+/* CONTINUAR (con brillo suave) */
 .caja-continuar{
-position:fixed;
-left:50%;
-transform:translateX(-50%) translateY(10px);
-width:min(700px, calc(100% - 18px));
-background:var(--glass);
-border:1px solid var(--border);
-padding:16px 18px;
-border-radius:999px;
-font-size:clamp(13px,3.8vw,15px);
-text-align:center;
-opacity:0;
-transition:0.5s;
-bottom: calc(42px + env(safe-area-inset-bottom));
-z-index:5;
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%) translateY(10px);
+  width:min(700px, calc(100% - 18px));
+  background:var(--glass);
+  border:1px solid var(--border);
+  padding:16px 18px;
+  border-radius:999px;
+  font-size:clamp(13px,3.8vw,15px);
+  line-height:1.35;
+  text-align:center;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  opacity:0;
+  transition:opacity 0.5s ease, transform 0.5s ease;
+
+  box-shadow:
+    0 0 8px rgba(255,255,255,0.20),
+    0 0 22px rgba(255,255,255,0.14);
+
+  bottom: calc(42px + env(safe-area-inset-bottom));
+  z-index:5;
 }
 .caja-continuar.mostrar{
-opacity:1;
-transform:translateX(-50%) translateY(0);
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+  animation: latido 900ms ease, brilloSuave 4s ease-in-out infinite;
 }
 
 /* CONTADOR */
 .contador{
-position:fixed;
-left:0; right:0;
-bottom: calc(10px + env(safe-area-inset-bottom));
-text-align:center;
-font-size:12.5px;
-opacity:0.9;
-z-index:5;
+  position:fixed;
+  left:0; right:0;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  text-align:center;
+  font-size:12.5px;
+  opacity:0.9;
+  padding:0 14px;
+  line-height:1.2;
+  z-index:5;
 }
 
 /* LOCK OVERLAY */
 .lock-overlay{
-position:fixed;
-inset:0;
-z-index:999;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:22px;
-background: rgba(0,0,0,0.25);
-backdrop-filter: blur(8px);
+  position:fixed;
+  inset:0;
+  z-index:999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(8px);
 }
-
 .lock-card{
-width:min(420px, calc(100% - 18px));
-background:var(--glass);
-border:1px solid var(--border);
-border-radius:22px;
-padding:22px;
-text-align:center;
-animation: popIn 400ms ease;
+  width:min(420px, calc(100% - 18px));
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+  text-align:center;
+  box-shadow:
+    0 0 10px rgba(255,255,255,0.18),
+    0 0 26px rgba(255,255,255,0.12),
+    0 18px 60px rgba(0,0,0,0.45);
+  animation: popIn 400ms ease;
 }
-
 .lock-title{
-font-family:'Agrandir', sans-serif;
-font-size:clamp(20px,6vw,32px);
-margin-bottom:12px;
+  font-family:'Agrandir', sans-serif;
+  font-size:clamp(20px,6vw,32px);
+  margin:0 0 12px;
 }
-
 .lock-input{
-width:80%;
-padding:14px;
-border-radius:14px;
-border:1px solid rgba(255,255,255,0.3);
-background:rgba(255,255,255,0.1);
-color:white;
-font-size:20px;
-text-align:center;
+  width:80%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.3);
+  background:rgba(255,255,255,0.1);
+  color:white;
+  font-size:20px;
+  text-align:center;
+  outline:none;
 }
-
 .lock-btn{
-margin-top:12px;
-padding:12px 18px;
-border:none;
-border-radius:14px;
-background:white;
-color:black;
-font-family:'Agrandir';
-font-size:16px;
+  margin-top:12px;
+  padding:12px 18px;
+  border:none;
+  border-radius:14px;
+  background:white;
+  color:black;
+  font-family:'Agrandir';
+  font-size:16px;
 }
 
+/* POPUP PISTAS (SIEMPRE ENCIMA DEL CANDADO) */
 .pista-overlay{
-position:fixed;
-inset:0;
-z-index:2000; /* 👈 más alto que lock */
-display:flex;
-align-items:center;
-justify-content:center;
-background: rgba(0,0,0,0.35);
-backdrop-filter: blur(10px);
+  position:fixed;
+  inset:0;
+  z-index:2000;              /* ✅ encima del lock */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
 }
-
+.pista-overlay.hidden{ display:none; }
 .pista-box{
-background:var(--glass);
-padding:22px;
-border-radius:22px;
-text-align:center;
-border:1px solid var(--border);
-font-size:18px;
-max-width:320px;
+  background:var(--glass);
+  padding:22px;
+  border-radius:22px;
+  text-align:center;
+  border:1px solid var(--border);
+  font-size:18px;
+  max-width:320px;
+  box-shadow:
+    0 0 10px rgba(255,255,255,0.18),
+    0 0 26px rgba(255,255,255,0.12),
+    0 18px 60px rgba(0,0,0,0.45);
+  animation: popIn 240ms ease;
+}
+.pista-mini{
+  margin-top:10px;
+  font-size:13px;
+  opacity:0.85;
 }
 
-/* ANIMACIONES */
+/* PARTÍCULAS UNLOCK */
+.particles{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1500;
+}
+.p{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  font-size:18px;
+  opacity:0;
+  animation: popParticle 900ms ease forwards;
+}
+@keyframes popParticle{
+  0%{ opacity:0; transform:translate(-50%,-50%) scale(0.6); }
+  10%{ opacity:1; }
+  100%{ opacity:0; transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2); }
+}
+
+/* TRANSICIONES */
 @keyframes popIn{
-from{opacity:0; transform:scale(0.95);}
-to{opacity:1; transform:scale(1);}
+  from{opacity:0; transform:translateY(10px) scale(0.98);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+.fadeOut{ animation: fadeOut 420ms forwards; }
+@keyframes fadeOut{ to{opacity:0;} }
+
+.hiddenMain{ opacity:0; pointer-events:none; }
+.visibleMain{
+  opacity:1;
+  pointer-events:auto;
+  animation: reveal 520ms ease;
+}
+@keyframes reveal{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
 }
 
-.fadeOut{
-animation: fadeOut 400ms forwards;
+@keyframes latido{
+  0%{transform:translateX(-50%) scale(1);}
+  40%{transform:translateX(-50%) scale(1.03);}
+  100%{transform:translateX(-50%) scale(1);}
 }
-@keyframes fadeOut{
-to{opacity:0;}
+@keyframes brilloSuave{
+  0%{ box-shadow:0 0 6px rgba(255,255,255,0.15), 0 0 16px rgba(255,255,255,0.10); }
+  50%{ box-shadow:0 0 14px rgba(255,255,255,0.32), 0 0 28px rgba(255,255,255,0.20); }
+  100%{ box-shadow:0 0 6px rgba(255,255,255,0.15), 0 0 16px rgba(255,255,255,0.10); }
 }
-
-.hidden{opacity:0; pointer-events:none;}
-.visible{opacity:1; transition:opacity 500ms ease;}
 </style>
 </head>
 
 <body>
 
 <div class="hearts">
-<div class="heart" style="left:10%;animation-duration:10s;">♥️</div>
-<div class="heart" style="left:30%;animation-duration:12s;">🐭</div>
-<div class="heart" style="left:60%;animation-duration:11s;">❤️‍🩹</div>
-<div class="heart" style="left:80%;animation-duration:13s;">❤️‍🔥</div>
+  <div class="heart" style="left:10%;animation-duration:10s;">♥️</div>
+  <div class="heart" style="left:30%;animation-duration:12s;">🐭</div>
+  <div class="heart" style="left:60%;animation-duration:11s;">❤️‍🩹</div>
+  <div class="heart" style="left:80%;animation-duration:13s;">❤️‍🔥</div>
 </div>
+
+<div class="particles" id="particles"></div>
 
 <!-- LOCK -->
 <div class="lock-overlay" id="lockOverlay">
-<div class="lock-card">
-<div class="lock-title">Contraseña</div>
-<input id="passInput" class="lock-input" type="password" maxlength="4" inputmode="numeric">
-<br>
-<button class="lock-btn" onclick="checkPass()">Entrar</button>
-</div>
+  <div class="lock-card">
+    <div class="lock-title">Contraseña</div>
+    <input id="passInput" class="lock-input" type="password" maxlength="4" inputmode="numeric" autocomplete="off">
+    <br>
+    <button class="lock-btn" id="btnEnter">Entrar</button>
+  </div>
 </div>
 
 <!-- PISTA POPUP -->
-<div class="pista-overlay hidden" id="pistaOverlay" onclick="cerrarPista()">
-<div class="pista-box" id="pistaText"></div>
+<div class="pista-overlay hidden" id="pistaOverlay">
+  <div class="pista-box">
+    <div id="pistaText"></div>
+    <div class="pista-mini">Toca para continuar</div>
+  </div>
 </div>
 
 <!-- MAIN CONTENT -->
-<div id="mainContent" class="hidden">
+<div id="mainContent" class="hiddenMain">
 
-<div class="header">
-<h1>¡Feliz San Valentín!</h1>
-</div>
+  <div class="header">
+    <h1>¡Feliz San Valentín!</h1>
+  </div>
 
-<div class="center">
-<div class="caja">
-<p class="texto" id="textoEscribiendo"></p>
-</div>
-</div>
+  <div class="center">
+    <div class="caja">
+      <p class="texto" id="textoEscribiendo"></p>
+    </div>
+  </div>
 
-<div class="caja-continuar" id="continuarBox">
-❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 1 y lee la siguiente etiqueta NFC
-</div>
+  <div class="caja-continuar" id="continuarBox">
+    ❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 1 y lee la siguiente etiqueta NFC
+  </div>
 
-<div class="contador" id="contador"></div>
+  <div class="contador" id="contador"></div>
 
 </div>
 
 <script>
+/* CONFIG */
+const PASSWORD = "0803";
+
 const pistas = [
-"Son 4 números 🤔",
-"Es una fecha importante ❤️‍🔥",
-"Empieza por: 08.. 💣",
-"0803 🙈"
+  "Son 4 números 🤔",
+  "Es una fecha importante ❤️‍🔥",
+  "Empieza por: 08.. 💣",
+  "0803 🙈"
 ];
 
 let intento = 0;
 
 function vibrar(ms){
-if(navigator.vibrate) navigator.vibrate(ms);
+  try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
 }
+
+/* ELEMENTOS */
+const btnEnter = document.getElementById("btnEnter");
+const passInput = document.getElementById("passInput");
+const lockOverlay = document.getElementById("lockOverlay");
+const pistaOverlay = document.getElementById("pistaOverlay");
+const pistaText = document.getElementById("pistaText");
+
+/* EVENTOS */
+btnEnter.addEventListener("click", checkPass);
+passInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") checkPass(); });
+
+setTimeout(()=>passInput.focus(), 200);
 
 function checkPass(){
-const val = document.getElementById("passInput").value;
-
-if(val === "0803"){
-unlock();
-}else{
-mostrarPista();
-}
+  const val = passInput.value.trim();
+  if(val === PASSWORD){
+    unlock();
+  } else {
+    mostrarPista();
+  }
 }
 
 function mostrarPista(){
-const overlay = document.getElementById("pistaOverlay");
-const text = document.getElementById("pistaText");
+  pistaText.textContent = pistas[Math.min(intento, pistas.length-1)];
+  pistaOverlay.classList.remove("hidden");
+  intento++;
+  vibrar(25);
 
-text.innerHTML = pistas[Math.min(intento, pistas.length-1)];
-overlay.classList.remove("hidden");
-
-intento++;
-vibrar(30);
+  pistaOverlay.onclick = () => {
+    pistaOverlay.classList.add("hidden");
+    passInput.value = "";
+    passInput.focus();
+  };
 }
 
-function cerrarPista(){
-document.getElementById("pistaOverlay").classList.add("hidden");
+/* PARTÍCULAS SUAVES */
+function lanzarParticulas(){
+  const cont = document.getElementById("particles");
+  cont.innerHTML = "";
+
+  const emojis = ["♥️","❤️‍🔥","❤️‍🩹","🐭"];
+  for(let i=0;i<14;i++){
+    const el = document.createElement("div");
+    el.className = "p";
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+
+    const dx = (Math.random()*260 - 130).toFixed(0) + "px";
+    const dy = (Math.random()*220 - 110).toFixed(0) + "px";
+    el.style.setProperty("--dx", dx);
+    el.style.setProperty("--dy", dy);
+    el.style.animationDelay = (Math.random()*140).toFixed(0) + "ms";
+
+    cont.appendChild(el);
+  }
+
+  setTimeout(()=>{ cont.innerHTML=""; }, 1150);
 }
 
+/* UNLOCK BONITO */
 function unlock(){
-vibrar(50);
+  vibrar(45);
+  lanzarParticulas();
 
-document.getElementById("lockOverlay").classList.add("fadeOut");
-
-setTimeout(()=>{
-document.getElementById("lockOverlay").style.display="none";
-document.getElementById("mainContent").classList.remove("hidden");
-document.getElementById("mainContent").classList.add("visible");
-startMain();
-},400);
+  lockOverlay.classList.add("fadeOut");
+  setTimeout(()=>{
+    lockOverlay.style.display="none";
+    const main = document.getElementById("mainContent");
+    main.classList.remove("hiddenMain");
+    main.classList.add("visibleMain");
+    startMainUltra();
+  }, 430);
 }
 
-/* MAIN */
-function startMain(){
+/* ULTRA SUAVE: CARTA POR PÁRRAFOS + PAUSAS HUMANAS */
+function startMainUltra(){
+  const paragraphs = [
+    "No hay nada que me haga más feliz que seguir sumando momentos a tu lado.",
+    "Espero que esta pequeña sorpresa te haga muchísima ilusión y te saque más de una sonrisa.",
+    "Te amo a fuego (y más) ❤️‍🔥"
+  ];
 
-const mensaje="Eres la casualidad más bonita que llegó a mi vida ❤️";
-let i=0;
+  const target = document.getElementById("textoEscribiendo");
+  target.textContent = "";
 
-function escribir(){
-if(i<mensaje.length){
-document.getElementById("textoEscribiendo").innerHTML+=mensaje[i];
-i++;
-setTimeout(escribir,40);
-}else{
-setTimeout(()=>{
-document.getElementById("continuarBox").classList.add("mostrar");
-},3000);
+  let p = 0;      // índice párrafo
+  let c = 0;      // índice carácter
+
+  function delayForChar(ch){
+    // base de escritura
+    let d = 26 + Math.random()*10;
+
+    // pausas humanas
+    if(ch === "," ) d = 170 + Math.random()*80;
+    if(ch === "." || ch === "!" || ch === "?" ) d = 320 + Math.random()*120;
+    if(ch === "…") d = 420 + Math.random()*140;
+    if(ch === " ") d = 18 + Math.random()*10;
+
+    return d;
+  }
+
+  function typeNext(){
+    if(p >= paragraphs.length){
+      // terminar carta -> esperar +3s y mostrar continuar
+      setTimeout(()=>{
+        document.getElementById("continuarBox").classList.add("mostrar");
+        vibrar(18);
+      }, 3000);
+      return;
+    }
+
+    const text = paragraphs[p];
+
+    if(c < text.length){
+      const ch = text.charAt(c);
+      target.textContent += ch;
+      c++;
+      setTimeout(typeNext, delayForChar(ch));
+    } else {
+      // fin de párrafo
+      p++;
+      c = 0;
+      if(p < paragraphs.length){
+        target.textContent += "\n\n";
+      }
+      // pausa entre párrafos (sensación de carta)
+      setTimeout(typeNext, 650);
+    }
+  }
+
+  // mini pausa inicial (cinematográfica)
+  setTimeout(typeNext, 220);
+
+  // contador
+  startCounter();
 }
-}
-escribir();
 
-const fechaInicio=new Date(2025,2,8);
+function startCounter(){
+  const fechaInicio = new Date(2025,2,8);
 
-function actualizar(){
-const ahora=new Date();
-const diff=ahora-fechaInicio;
+  function actualizar(){
+    const ahora = new Date();
+    const diff = ahora - fechaInicio;
 
-const dias=Math.floor(diff/(1000*60*60*24));
-const horas=Math.floor((diff/(1000*60*60))%24);
-const minutos=Math.floor((diff/(1000*60))%60);
+    const dias = Math.floor(diff/(1000*60*60*24));
+    const horas = Math.floor((diff/(1000*60*60))%24);
+    const minutos = Math.floor((diff/(1000*60))%60);
 
-document.getElementById("contador").innerHTML=
-"♥️ Llevamos juntas: "+dias+" días · "+horas+" h · "+minutos+" min";
-}
+    document.getElementById("contador").textContent =
+      "♥️ Llevamos juntas: " + dias + " días · " + horas + " h · " + minutos + " min";
+  }
 
-setInterval(actualizar,60000);
-actualizar();
-
+  setInterval(actualizar, 60000);
+  actualizar();
 }
 </script>
 
 </body>
 </html>
-
