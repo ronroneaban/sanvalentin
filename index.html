@@ -44,21 +44,21 @@ html,body{
   text-shadow: 0 10px 30px rgba(0,0,0,0.22);
 }
 
-/* ===== CENTRO ===== */
+/* ===== CENTRO (SUBE EL CUADRO) ===== */
 .center{
   height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:0 20px;
-  padding-top:58px;
+  padding-top:30px; /* ✅ antes 58px -> sube el cuadro */
 }
 
-/* ===== CAJA PRINCIPAL (un pelín más pequeña) ===== */
+/* ===== CAJA PRINCIPAL ===== */
 .caja{
   width:100%;
-  max-width:500px;         /* ✅ antes 520 */
-  padding:26px;            /* ✅ antes 30 */
+  max-width:500px;
+  padding:26px;
   border-radius:26px;
   background:var(--glass);
   backdrop-filter: blur(14px);
@@ -71,19 +71,19 @@ html,body{
 .texto{
   font-size:clamp(18px, 4.8vw, 21px);
   line-height:1.6;
-  white-space:pre-wrap;     /* ✅ respeta saltos */
+  white-space:pre-wrap;
   margin:0;
   min-height:160px;
 }
 
-/* ===== CONTINUAR (sube un poquito pero SIN tocar el cuadro) ===== */
+/* ===== CONTINUAR ===== */
 .caja-continuar{
   position:fixed;
   left:50%;
   transform:translateX(-50%);
-  bottom: calc(78px + env(safe-area-inset-bottom));  /* ✅ un poco más arriba */
+  bottom: calc(78px + env(safe-area-inset-bottom));
   width:92%;
-  max-width:500px;         /* ✅ igual que caja */
+  max-width:500px;
   padding:14px 22px;
   border-radius:40px;
   background:var(--glass);
@@ -189,7 +189,6 @@ button{
   from{opacity:0; transform:translateY(10px) scale(0.98);}
   to{opacity:1; transform:translateY(0) scale(1);}
 }
-
 </style>
 </head>
 
@@ -265,7 +264,7 @@ function checkPass(){
   const val = passInput.value.trim();
   if(val === "0803"){
     passwordDiv.style.display="none";
-    startUltra();  // ✅ empieza todo
+    startUltra();
   } else {
     popupText.textContent = pistas[Math.min(intentos, pistas.length-1)];
     popup.classList.add("show");
@@ -274,7 +273,7 @@ function checkPass(){
   }
 }
 
-/* ===== ULTRA: ESCRITURA REALISTA POR PÁRRAFOS ===== */
+/* ===== ULTRA: ESCRITURA REALISTA (MÁS LENTA) ===== */
 function startUltra(){
   const paragraphs = [
     "No hay nada que me haga más feliz que seguir sumando momentos a tu lado.",
@@ -289,16 +288,19 @@ function startUltra(){
   let c = 0;
 
   function delayForChar(ch){
-    let d = 26 + Math.random()*10;
-    if(ch === ",") d = 170 + Math.random()*80;
-    if(ch === "." || ch === "!" || ch === "?" ) d = 320 + Math.random()*120;
-    if(ch === " ") d = 18 + Math.random()*10;
+    // ✅ base MUCHO más lenta
+    let d = 62 + Math.random()*28;
+
+    // pausas “humanas”
+    if(ch === ",") d = 260 + Math.random()*160;
+    if(ch === "." || ch === "!" || ch === "?" ) d = 520 + Math.random()*260;
+    if(ch === " ") d = 40 + Math.random()*20;
+
     return d;
   }
 
   function typeNext(){
     if(p >= paragraphs.length){
-      // cuando termina: esperar +3s y mostrar "continuar"
       setTimeout(()=>{
         document.getElementById("continuar").classList.add("show");
         try{ if(navigator.vibrate) navigator.vibrate(15); }catch(e){}
@@ -319,12 +321,11 @@ function startUltra(){
       if(p < paragraphs.length){
         target.textContent += "\n\n";
       }
-      setTimeout(typeNext, 650);
+      setTimeout(typeNext, 800); // ✅ pausa entre párrafos un poco mayor
     }
   }
 
-  setTimeout(typeNext, 250);
-
+  setTimeout(typeNext, 350);
   startCounter();
 }
 
