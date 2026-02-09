@@ -179,11 +179,10 @@ font-family:'Agrandir';
 font-size:16px;
 }
 
-/* POPUP PISTAS */
 .pista-overlay{
 position:fixed;
 inset:0;
-z-index:998;
+z-index:2000; /* 👈 más alto que lock */
 display:flex;
 align-items:center;
 justify-content:center;
@@ -357,3 +356,4 @@ actualizar();
 
 </body>
 </html>
+
