@@ -6,15 +6,31 @@
 <title>Sorpresa 1</title>
 
 <style>
+
+/* FUENTES REALES TUYAS */
+
+@font-face {
+font-family: 'AgrandirHeavy';
+src: url('./Agrandir-GrandHeavy.otf') format('opentype');
+}
+
+@font-face {
+font-family: 'GaretBook';
+src: url('./Spacetype - Garet Book.otf') format('opentype');
+}
+
+/* ESTILOS */
+
 body{
 margin:0;
-font-family: Arial, Helvetica, sans-serif;
+font-family:'GaretBook', sans-serif;
 background:#d6283f;
 color:white;
+height:100vh;
+overflow:hidden;
 display:flex;
 align-items:center;
 justify-content:center;
-min-height:100vh;
 padding:20px;
 }
 
@@ -26,7 +42,12 @@ border-radius:20px;
 text-align:center;
 }
 
+h1{
+font-family:'AgrandirHeavy', sans-serif;
+}
+
 button{
+font-family:'AgrandirHeavy', sans-serif;
 padding:15px;
 font-size:22px;
 border:none;
@@ -42,6 +63,7 @@ border-radius:15px;
 display:none;
 cursor:pointer;
 }
+
 </style>
 </head>
 
@@ -53,7 +75,7 @@ cursor:pointer;
 
 <button onclick="mostrar()">SORPRESA 1</button>
 
-<img id="foto" src="./img1.jpg" alt="Sorpresa 1" onclick="pantallaCompleta(this)">
+<img id="foto" src="./img1.jpg" onclick="pantallaCompleta(this)">
 
 </div>
 
@@ -63,15 +85,9 @@ document.getElementById("foto").style.display="block";
 }
 
 function pantallaCompleta(img){
-if(img.requestFullscreen){
-img.requestFullscreen();
-}
-else if(img.webkitRequestFullscreen){
-img.webkitRequestFullscreen();
-}
-else if(img.msRequestFullscreen){
-img.msRequestFullscreen();
-}
+if(img.requestFullscreen){img.requestFullscreen();}
+else if(img.webkitRequestFullscreen){img.webkitRequestFullscreen();}
+else if(img.msRequestFullscreen){img.msRequestFullscreen();}
 }
 </script>
 
