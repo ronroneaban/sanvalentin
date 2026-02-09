@@ -6,90 +6,173 @@
 <title>Sorpresa 1</title>
 
 <style>
+@font-face { font-family:'AgrandirHeavy'; src:url('./Agrandir-GrandHeavy.otf') format('opentype'); }
+@font-face { font-family:'GaretBook'; src:url('./Spacetype - Garet Book.otf') format('opentype'); }
 
-/* FUENTES REALES TUYAS */
-
-@font-face {
-font-family: 'AgrandirHeavy';
-src: url('./Agrandir-GrandHeavy.otf') format('opentype');
+:root{
+  --rojo:#d6283f;
+  --glass: rgba(255,255,255,0.16);
+  --borde: rgba(255,255,255,0.25);
+  --sombra: 0 18px 60px rgba(0,0,0,0.35);
 }
 
-@font-face {
-font-family: 'GaretBook';
-src: url('./Spacetype - Garet Book.otf') format('opentype');
-}
-
-/* ESTILOS */
+*{box-sizing:border-box;}
 
 body{
-margin:0;
-font-family:'GaretBook', sans-serif;
-background:#d6283f;
-color:white;
-height:100vh;
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
+  margin:0;
+  font-family:'GaretBook', sans-serif;
+  background:var(--rojo);
+  color:white;
+
+  height:100vh;
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+
+  position:relative;
+}
+
+@keyframes entrar {
+  from { opacity:0; transform: translateY(14px); }
+  to   { opacity:1; transform: translateY(0); }
 }
 
 .caja{
-max-width:700px;
-background:rgba(255,255,255,0.15);
-padding:25px;
-border-radius:20px;
-text-align:center;
+  width:100%;
+  max-width:720px;
+  background:var(--glass);
+  border:1px solid var(--borde);
+  padding:24px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:var(--sombra);
+  animation: entrar 500ms ease-out both;
 }
 
 h1{
-font-family:'AgrandirHeavy', sans-serif;
+  font-family:'AgrandirHeavy', sans-serif;
+  margin:0 0 14px;
+  font-size: clamp(28px, 6vw, 40px);
 }
 
-button{
-font-family:'AgrandirHeavy', sans-serif;
-padding:15px;
-font-size:22px;
-border:none;
-border-radius:15px;
-cursor:pointer;
+.btn{
+  font-family:'AgrandirHeavy', sans-serif;
+  padding:14px 18px;
+  font-size:22px;
+  border:none;
+  border-radius:16px;
+  cursor:pointer;
+  color:#ffffff;
+  background: rgba(255,255,255,0.22);
+  border: 1px solid rgba(255,255,255,0.25);
+  box-shadow: 0 14px 35px rgba(0,0,0,0.18);
+  position:relative;
+  overflow:hidden;
+  transform: translateZ(0);
+}
+
+.btn:active{
+  transform: scale(0.98);
+}
+
+.btn::after{
+  content:'';
+  position:absolute;
+  top:-40%;
+  left:-60%;
+  width:60%;
+  height:200%;
+  background: rgba(255,255,255,0.25);
+  transform: rotate(20deg);
+  transition: left 350ms ease;
+}
+
+.btn:hover::after{
+  left:120%;
+}
+
+.hint{
+  margin-top:12px;
+  opacity:0.9;
 }
 
 img{
-width:100%;
-max-width:500px;
-margin-top:20px;
-border-radius:15px;
-display:none;
-cursor:pointer;
+  width:100%;
+  max-width:520px;
+  margin-top:18px;
+  border-radius:16px;
+  display:none;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,0.25);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.25);
+  opacity:0;
+  transform: translateY(8px);
 }
 
+@keyframes aparecerFoto{
+  to { opacity:1; transform: translateY(0); }
+}
+
+/* Corazones */
+.hearts{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.heart{
+  position:absolute;
+  bottom:-60px;
+  font-size:18px;
+  opacity:0.85;
+  animation: floatUp linear infinite;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.20));
+}
+@keyframes floatUp{
+  from { transform: translateY(0) translateX(0) scale(1); opacity:0.0; }
+  10%  { opacity:0.9; }
+  to   { transform: translateY(-120vh) translateX(30px) scale(1.15); opacity:0.0; }
+}
 </style>
 </head>
 
 <body>
+<div class="hearts" aria-hidden="true">
+  <div class="heart" style="left:12%; animation-duration: 11s; animation-delay: 0s;">💗</div>
+  <div class="heart" style="left:28%; animation-duration: 13s; animation-delay: 1s;">💘</div>
+  <div class="heart" style="left:44%; animation-duration: 10.5s; animation-delay: 2s;">❤️</div>
+  <div class="heart" style="left:60%; animation-duration: 12s; animation-delay: 0.5s;">💓</div>
+  <div class="heart" style="left:76%; animation-duration: 11.5s; animation-delay: 1.2s;">💖</div>
+</div>
 
 <div class="caja">
+  <h1>Sorpresa 1 ❤️</h1>
 
-<h1>Sorpresa 1 ❤️</h1>
+  <button class="btn" onclick="mostrar()">SORPRESA 1</button>
+  <div class="hint">Toca el botón… y luego toca la foto para verla en pantalla completa 😄</div>
 
-<button onclick="mostrar()">SORPRESA 1</button>
-
-<img id="foto" src="./img1.jpg" onclick="pantallaCompleta(this)">
-
+  <img id="foto" src="./img1.jpg" alt="Sorpresa 1" onclick="pantallaCompleta(this)">
 </div>
 
 <script>
+function vibrar(ms){
+  try{
+    if (navigator.vibrate) navigator.vibrate(ms);
+  } catch(e){}
+}
+
 function mostrar(){
-document.getElementById("foto").style.display="block";
+  vibrar(30);
+  const foto = document.getElementById("foto");
+  foto.style.display = "block";
+  // animación suave de aparición
+  foto.style.animation = "aparecerFoto 420ms ease-out forwards";
 }
 
 function pantallaCompleta(img){
-if(img.requestFullscreen){img.requestFullscreen();}
-else if(img.webkitRequestFullscreen){img.webkitRequestFullscreen();}
-else if(img.msRequestFullscreen){img.msRequestFullscreen();}
+  vibrar(15);
+  if(img.requestFullscreen){ img.requestFullscreen(); }
+  else if(img.webkitRequestFullscreen){ img.webkitRequestFullscreen(); }
+  else if(img.msRequestFullscreen){ img.msRequestFullscreen(); }
 }
 </script>
-
 </body>
 </html>
