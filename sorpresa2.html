@@ -38,4 +38,42 @@ img{
 width:100%;
 max-width:500px;
 margin-top:20px;
-border-radius
+border-radius:15px;
+display:none;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="caja">
+
+<h1>Sorpresa 2 ❤️</h1>
+
+<button onclick="mostrar()">SORPRESA 2</button>
+
+<img id="foto" src="./img2.jpg" alt="Sorpresa 2" onclick="pantallaCompleta(this)">
+
+</div>
+
+<script>
+function mostrar(){
+document.getElementById("foto").style.display="block";
+}
+
+function pantallaCompleta(img){
+if(img.requestFullscreen){
+img.requestFullscreen();
+}
+else if(img.webkitRequestFullscreen){
+img.webkitRequestFullscreen();
+}
+else if(img.msRequestFullscreen){
+img.msRequestFullscreen();
+}
+}
+</script>
+
+</body>
+</html>
