@@ -45,42 +45,35 @@ background:rgba(255,255,255,0.15);
 padding:25px;
 border-radius:20px;
 text-align:center;
-
 animation: aparecer 0.6s ease;
 }
 
-/* IMPORTANTE = AGRANDIR */
-
-h1,
-button,
-.final,
-.importante{
-font-family:'Agrandir', sans-serif;
-}
-
-/* 🔥 TÍTULO SIN SALTO DE LÍNEA */
+/* 🔥 SOLO EL TÍTULO EN AGRANDIR */
 
 h1{
+font-family:'Agrandir', sans-serif;
 white-space: nowrap;
 font-size: clamp(28px, 6vw, 52px);
+}
+
+/* 🔥 FINAL EN GARET (LO QUE QUERÍAS) */
+
+.final{
+font-family:'Garet', sans-serif;
+font-size:24px;
+margin-top:25px;
 }
 
 /* TEXTO NORMAL */
 
 .texto{
+font-family:'Garet', sans-serif;
 font-size:20px;
 line-height:1.6;
 margin-top:15px;
 }
 
-/* FINAL */
-
-.final{
-font-size:24px;
-margin-top:25px;
-}
-
-/* ANIMACIÓN ENTRADA */
+/* ANIMACIÓN */
 
 @keyframes aparecer{
 from{
@@ -93,7 +86,7 @@ transform:translateY(0);
 }
 }
 
-/* EMOJIS FLOTANDO */
+/* EMOJIS */
 
 .hearts{
 position:absolute;
@@ -128,7 +121,6 @@ opacity:0;
 
 <body>
 
-<!-- EMOJIS -->
 <div class="hearts">
 <div class="heart" style="left:10%;animation-duration:10s;">♥️</div>
 <div class="heart" style="left:30%;animation-duration:12s;">🐭</div>
