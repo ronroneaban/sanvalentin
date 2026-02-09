@@ -40,6 +40,7 @@ max-width:500px;
 margin-top:20px;
 border-radius:15px;
 display:none;
+cursor:pointer;
 }
 </style>
 </head>
@@ -52,13 +53,25 @@ display:none;
 
 <button onclick="mostrar()">SORPRESA 3</button>
 
-<img id="foto" src="img3.jpg" alt="Sorpresa 3">
+<img id="foto" src="./img3.jpg" alt="Sorpresa 3" onclick="pantallaCompleta(this)">
 
 </div>
 
 <script>
 function mostrar(){
 document.getElementById("foto").style.display="block";
+}
+
+function pantallaCompleta(img){
+if(img.requestFullscreen){
+img.requestFullscreen();
+}
+else if(img.webkitRequestFullscreen){
+img.webkitRequestFullscreen();
+}
+else if(img.msRequestFullscreen){
+img.msRequestFullscreen();
+}
 }
 </script>
 
