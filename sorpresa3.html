@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sorpresa 3</title>
+
+<style>
+body{
+margin:0;
+font-family: Arial, Helvetica, sans-serif;
+background:#b3001b;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:100vh;
+padding:20px;
+}
+
+.caja{
+max-width:700px;
+background:rgba(255,255,255,0.15);
+padding:25px;
+border-radius:20px;
+text-align:center;
+}
+
+button{
+padding:15px;
+font-size:22px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+}
+
+img{
+width:100%;
+max-width:500px;
+margin-top:20px;
+border-radius:15px;
+display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="caja">
+
+<h1>Sorpresa 3 ❤️</h1>
+
+<button onclick="mostrar()">SORPRESA 3</button>
+
+<img id="foto" src="img3.jpg" alt="Sorpresa 3">
+
+</div>
+
+<script>
+function mostrar(){
+document.getElementById("foto").style.display="block";
+}
+</script>
+
+</body>
+</html>
