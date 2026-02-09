@@ -25,15 +25,12 @@ margin:0;
 font-family:'Garet', sans-serif;
 background:#d6283f;
 color:white;
-
 height:100vh;
 overflow:hidden;
-
 display:flex;
 align-items:center;
 justify-content:center;
 padding:20px;
-
 position:relative;
 }
 
@@ -48,42 +45,44 @@ text-align:center;
 animation: aparecer 0.6s ease;
 }
 
-/* 🔥 SOLO EL TÍTULO EN AGRANDIR */
+/* TITULO */
 
 h1{
 font-family:'Agrandir', sans-serif;
-white-space: nowrap;
-font-size: clamp(28px, 6vw, 52px);
+white-space:nowrap;
+font-size:clamp(28px,6vw,52px);
 }
 
-/* 🔥 FINAL EN GARET (LO QUE QUERÍAS) */
-
-.final{
-font-family:'Garet', sans-serif;
-font-size:24px;
-margin-top:25px;
-}
-
-/* TEXTO NORMAL */
+/* TEXTO ESCRIBIENDOSE */
 
 .texto{
 font-family:'Garet', sans-serif;
 font-size:20px;
 line-height:1.6;
 margin-top:15px;
+min-height:80px;
 }
 
-/* ANIMACIÓN */
+/* CONTADOR */
+
+.contador{
+margin-top:20px;
+font-size:18px;
+}
+
+/* FINAL */
+
+.final{
+font-family:'Garet', sans-serif;
+font-size:22px;
+margin-top:25px;
+}
+
+/* ANIMACION */
 
 @keyframes aparecer{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
+from{opacity:0; transform:translateY(20px);}
+to{opacity:1; transform:translateY(0);}
 }
 
 /* EMOJIS */
@@ -106,14 +105,8 @@ animation: subir linear infinite;
 }
 
 @keyframes subir{
-from{
-transform:translateY(0);
-opacity:0.8;
-}
-to{
-transform:translateY(-120vh);
-opacity:0;
-}
+from{transform:translateY(0); opacity:0.8;}
+to{transform:translateY(-120vh); opacity:0;}
 }
 
 </style>
@@ -126,25 +119,64 @@ opacity:0;
 <div class="heart" style="left:30%;animation-duration:12s;">🐭</div>
 <div class="heart" style="left:60%;animation-duration:11s;">❤️‍🩹</div>
 <div class="heart" style="left:80%;animation-duration:13s;">❤️‍🔥</div>
-
-<div class="heart" style="left:20%;animation-duration:9s;">♥️</div>
-<div class="heart" style="left:45%;animation-duration:11s;">🐭</div>
-<div class="heart" style="left:70%;animation-duration:10s;">❤️‍🔥</div>
 </div>
 
 <div class="caja">
 
 <h1>¡Feliz San Valentín!</h1>
 
-<p class="texto">
-Aquí va tu texto largo romántico ❤️
-</p>
+<p class="texto" id="textoEscribiendo"></p>
+
+<div class="contador" id="contador"></div>
 
 <p class="final">
 Para continuar con la sorpresa, abre la CAJA 1 y lee la siguiente etiqueta NFC
 </p>
 
 </div>
+
+<script>
+
+/* TEXTO QUE SE ESCRIBE */
+
+const mensaje = "Eres la casualidad más bonita que llegó a mi vida ❤️";
+let i = 0;
+
+function escribir(){
+if(i < mensaje.length){
+document.getElementById("textoEscribiendo").innerHTML += mensaje.charAt(i);
+i++;
+setTimeout(escribir, 40);
+}
+}
+
+escribir();
+
+/* CONTADOR DESDE 8 MARZO 2025 */
+
+const fechaInicio = new Date(2025, 2, 8); // Marzo = 2
+
+function actualizarContador(){
+
+const ahora = new Date();
+const diferencia = ahora - fechaInicio;
+
+const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+const horas = Math.floor((diferencia / (1000 * 60 * 60)) % 24);
+const minutos = Math.floor((diferencia / (1000 * 60)) % 60);
+
+document.getElementById("contador").innerHTML =
+"❤️ Llevamos juntos: " +
+dias + " días " +
+horas + " horas " +
+minutos + " minutos";
+
+}
+
+setInterval(actualizarContador, 60000);
+actualizarContador();
+
+</script>
 
 </body>
 </html>
