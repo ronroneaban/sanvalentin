@@ -6,176 +6,188 @@
 <title>❤️</title>
 
 <style>
+@font-face{ font-family:"Agrandir"; src:url("Agrandir-GrandHeavy.otf") format("opentype"); }
+@font-face{ font-family:"Garet"; src:url("Spacetype - Garet Book.otf") format("opentype"); }
 
-/* ===== FUENTES ===== */
-@font-face{
-font-family:"Agrandir";
-src:url("Agrandir-GrandHeavy.otf") format("opentype");
+:root{
+  --bg:#d6283f;
+  --glass: rgba(255,255,255,0.14);
+  --border: rgba(255,255,255,0.22);
 }
 
-@font-face{
-font-family:"Garet";
-src:url("Spacetype - Garet Book.otf") format("opentype");
-}
-
-/* ===== RESET ===== */
 *{box-sizing:border-box;}
 
 html,body{
-margin:0;
-height:100%;
-overflow:hidden;
-background:#d6283f;
-color:white;
-font-family:"Garet", Arial;
+  margin:0;
+  height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:white;
+  font-family:"Garet", Arial;
 }
 
 /* ===== HEADER ===== */
 .header{
-position:fixed;
-top: calc(38px + env(safe-area-inset-top));
-left:0;
-width:100%;
-text-align:center;
-z-index:5;
+  position:fixed;
+  top: calc(38px + env(safe-area-inset-top));
+  left:0;
+  width:100%;
+  text-align:center;
+  z-index:5;
+  padding:0 16px;
 }
-
 .header h1{
-font-family:"Agrandir";
-font-size:48px;
-margin:0;
+  font-family:"Agrandir";
+  margin:0;
+  font-size:clamp(34px, 10vw, 48px);
+  line-height:1.02;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.22);
 }
 
 /* ===== CENTRO ===== */
 .center{
-height:100%;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:0 20px;
-padding-top:55px;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 20px;
+  padding-top:58px;
 }
 
-/* ===== CAJA PRINCIPAL ===== */
+/* ===== CAJA PRINCIPAL (un pelín más pequeña) ===== */
 .caja{
-width:100%;
-max-width:520px;
-padding:30px;
-border-radius:26px;
-background:rgba(255,255,255,0.14);
-backdrop-filter: blur(14px);
-box-shadow:0 0 40px rgba(255,255,255,0.18);
-text-align:center;
+  width:100%;
+  max-width:500px;         /* ✅ antes 520 */
+  padding:26px;            /* ✅ antes 30 */
+  border-radius:26px;
+  background:var(--glass);
+  backdrop-filter: blur(14px);
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(255,255,255,0.18);
+  text-align:center;
 }
 
+/* Texto escrito con saltos */
 .texto{
-font-size:22px;
-line-height:1.6;
+  font-size:clamp(18px, 4.8vw, 21px);
+  line-height:1.6;
+  white-space:pre-wrap;     /* ✅ respeta saltos */
+  margin:0;
+  min-height:160px;
 }
 
-/* ===== CONTINUAR ===== */
+/* ===== CONTINUAR (sube un poquito pero SIN tocar el cuadro) ===== */
 .caja-continuar{
-position:fixed;
-left:50%;
-transform:translateX(-50%);
-bottom: calc(72px + env(safe-area-inset-bottom));
-width:92%;
-max-width:520px;
-padding:16px 24px;
-border-radius:40px;
-background:rgba(255,255,255,0.14);
-backdrop-filter: blur(12px);
-box-shadow:0 0 35px rgba(255,255,255,0.18);
-text-align:center;
-font-size:17px;
-opacity:0;
-transition:1s;
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom: calc(78px + env(safe-area-inset-bottom));  /* ✅ un poco más arriba */
+  width:92%;
+  max-width:500px;         /* ✅ igual que caja */
+  padding:14px 22px;
+  border-radius:40px;
+  background:var(--glass);
+  backdrop-filter: blur(12px);
+  border:1px solid var(--border);
+  box-shadow:0 0 35px rgba(255,255,255,0.18);
+  text-align:center;
+  font-size:clamp(14px, 3.8vw, 16px);
+  opacity:0;
+  transition:0.8s;
+  z-index:6;
 }
-
-.caja-continuar.show{
-opacity:1;
-}
+.caja-continuar.show{ opacity:1; }
 
 /* ===== CONTADOR ===== */
 .contador{
-position:fixed;
-bottom: calc(18px + env(safe-area-inset-bottom));
-width:100%;
-text-align:center;
-font-size:15px;
-opacity:.9;
+  position:fixed;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  width:100%;
+  text-align:center;
+  font-size:15px;
+  opacity:.9;
+  z-index:6;
 }
 
 /* ===== PASSWORD ===== */
 .password{
-position:fixed;
-inset:0;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#d6283f;
-z-index:20;
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--bg);
+  z-index:20;
 }
-
 .password-box{
-background:rgba(255,255,255,0.15);
-padding:40px;
-border-radius:28px;
-box-shadow:0 0 40px rgba(255,255,255,0.18);
-text-align:center;
+  background:rgba(255,255,255,0.15);
+  padding:34px 30px;
+  border-radius:28px;
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(255,255,255,0.18);
+  text-align:center;
+  width:min(420px, 92%);
+  animation:popIn 420ms ease;
 }
-
 .password-box h2{
-font-family:"Agrandir";
-margin-bottom:20px;
+  font-family:"Agrandir";
+  margin:0 0 18px;
+  font-size:clamp(26px, 7vw, 34px);
 }
-
 input{
-padding:14px;
-border-radius:16px;
-border:none;
-font-size:20px;
-text-align:center;
-margin-bottom:15px;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.25);
+  background:rgba(255,255,255,0.10);
+  color:white;
+  font-size:20px;
+  text-align:center;
+  width:min(260px, 80%);
+  outline:none;
+  margin-bottom:14px;
 }
-
 button{
-padding:14px 30px;
-border-radius:18px;
-border:none;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
+  padding:14px 30px;
+  border-radius:18px;
+  border:none;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  font-family:"Agrandir";
 }
 
 /* ===== POPUP PISTAS ===== */
 .popup{
-position:fixed;
-inset:0;
-display:none;
-align-items:center;
-justify-content:center;
-background:rgba(0,0,0,0.45);
-backdrop-filter: blur(6px);
-z-index:50;
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
+  z-index:50;
 }
-
+.popup.show{ display:flex; }
 .popup-box{
-background:white;
-color:black;
-padding:30px;
-border-radius:22px;
-font-size:20px;
-text-align:center;
+  background:rgba(255,255,255,0.92);
+  color:#111;
+  padding:26px;
+  border-radius:22px;
+  font-size:20px;
+  text-align:center;
+  width:min(360px, 86%);
+  animation:popIn 240ms ease;
+}
+.popup-mini{
+  margin-top:10px;
+  font-size:13px;
+  opacity:0.75;
 }
 
-.popup.show{
-display:flex;
-}
-
-@media(max-width:420px){
-.header h1{font-size:40px;}
-.texto{font-size:20px;}
+/* ===== ANIM ===== */
+@keyframes popIn{
+  from{opacity:0; transform:translateY(10px) scale(0.98);}
+  to{opacity:1; transform:translateY(0) scale(1);}
 }
 
 </style>
@@ -185,104 +197,155 @@ display:flex;
 
 <!-- PASSWORD -->
 <div class="password" id="password">
-<div class="password-box">
-<h2>Contraseña</h2>
-<input id="pass" type="password" maxlength="4">
-<br>
-<button onclick="checkPass()">Entrar</button>
-</div>
+  <div class="password-box">
+    <h2>Contraseña</h2>
+    <input id="pass" type="password" maxlength="4" inputmode="numeric" autocomplete="off">
+    <br>
+    <button id="btnEnter">Entrar</button>
+  </div>
 </div>
 
-<!-- POPUP -->
-<div class="popup" id="popup" onclick="cerrarPopup()">
-<div class="popup-box" id="popupText"></div>
+<!-- POPUP PISTAS -->
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <div id="popupText"></div>
+    <div class="popup-mini">Toca para continuar</div>
+  </div>
 </div>
 
 <!-- HEADER -->
 <div class="header">
-<h1>¡Feliz San Valentín!</h1>
+  <h1>¡Feliz San Valentín!</h1>
 </div>
 
 <!-- CENTRO -->
 <div class="center">
-<div class="caja">
-<div class="texto">
-
-No hay nada que me haga más feliz que seguir sumando momentos a tu lado.
-
-<br><br>
-
-Espero que esta pequeña sorpresa te haga muchísima ilusión y te saque más de una sonrisa.
-
-<br><br>
-
-Te amo a fuego (y más) ❤️‍🔥
-
-</div>
-</div>
+  <div class="caja">
+    <p class="texto" id="textoEscribiendo"></p>
+  </div>
 </div>
 
 <!-- CONTINUAR -->
 <div class="caja-continuar" id="continuar">
-❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 1
+  ❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 1
 </div>
 
 <!-- CONTADOR -->
-<div class="contador" id="contador">
-❤️ Llevamos juntas: ...
-</div>
+<div class="contador" id="contador">❤️ Llevamos juntas: ...</div>
 
 <script>
-
-/* PASSWORD */
-let intentos=0;
-let pistas=[
-"Son 4 números 🤔",
-"Es una fecha importante ❤️‍🔥",
-"Empieza por: 08.. 💣",
-"0803 🙈"
+/* ===== PASSWORD + PISTAS ===== */
+let intentos = 0;
+const pistas = [
+  "Son 4 números 🤔",
+  "Es una fecha importante ❤️‍🔥",
+  "Empieza por: 08.. 💣",
+  "0803 🙈"
 ];
 
+const passwordDiv = document.getElementById("password");
+const passInput = document.getElementById("pass");
+const btnEnter = document.getElementById("btnEnter");
+
+const popup = document.getElementById("popup");
+const popupText = document.getElementById("popupText");
+
+popup.addEventListener("click", () => {
+  popup.classList.remove("show");
+  passInput.value = "";
+  passInput.focus();
+});
+
+btnEnter.addEventListener("click", checkPass);
+passInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") checkPass(); });
+
+setTimeout(()=>passInput.focus(), 250);
+
 function checkPass(){
-let val=document.getElementById("pass").value;
-if(val==="0803"){
-document.getElementById("password").style.display="none";
-setTimeout(()=>continuar.classList.add("show"),9000);
-}else{
-mostrarPista();
-}
-}
-
-function mostrarPista(){
-let popup=document.getElementById("popup");
-let txt=document.getElementById("popupText");
-txt.innerHTML=pistas[Math.min(intentos,pistas.length-1)];
-popup.classList.add("show");
-intentos++;
+  const val = passInput.value.trim();
+  if(val === "0803"){
+    passwordDiv.style.display="none";
+    startUltra();  // ✅ empieza todo
+  } else {
+    popupText.textContent = pistas[Math.min(intentos, pistas.length-1)];
+    popup.classList.add("show");
+    intentos++;
+    try{ if(navigator.vibrate) navigator.vibrate(25); }catch(e){}
+  }
 }
 
-function cerrarPopup(){
-document.getElementById("popup").classList.remove("show");
+/* ===== ULTRA: ESCRITURA REALISTA POR PÁRRAFOS ===== */
+function startUltra(){
+  const paragraphs = [
+    "No hay nada que me haga más feliz que seguir sumando momentos a tu lado.",
+    "Espero que esta pequeña sorpresa te haga muchísima ilusión y te saque más de una sonrisa.",
+    "Te amo a fuego (y más) ❤️‍🔥"
+  ];
+
+  const target = document.getElementById("textoEscribiendo");
+  target.textContent = "";
+
+  let p = 0;
+  let c = 0;
+
+  function delayForChar(ch){
+    let d = 26 + Math.random()*10;
+    if(ch === ",") d = 170 + Math.random()*80;
+    if(ch === "." || ch === "!" || ch === "?" ) d = 320 + Math.random()*120;
+    if(ch === " ") d = 18 + Math.random()*10;
+    return d;
+  }
+
+  function typeNext(){
+    if(p >= paragraphs.length){
+      // cuando termina: esperar +3s y mostrar "continuar"
+      setTimeout(()=>{
+        document.getElementById("continuar").classList.add("show");
+        try{ if(navigator.vibrate) navigator.vibrate(15); }catch(e){}
+      }, 3000);
+      return;
+    }
+
+    const text = paragraphs[p];
+
+    if(c < text.length){
+      const ch = text.charAt(c);
+      target.textContent += ch;
+      c++;
+      setTimeout(typeNext, delayForChar(ch));
+    } else {
+      p++;
+      c = 0;
+      if(p < paragraphs.length){
+        target.textContent += "\n\n";
+      }
+      setTimeout(typeNext, 650);
+    }
+  }
+
+  setTimeout(typeNext, 250);
+
+  startCounter();
 }
 
-/* CONTADOR */
-let inicio=new Date("2025-03-08T00:00:00");
+/* ===== CONTADOR ===== */
+const inicio = new Date("2025-03-08T00:00:00");
 
-function actualizar(){
-let ahora=new Date();
-let diff=ahora-inicio;
+function startCounter(){
+  function actualizar(){
+    const ahora = new Date();
+    const diff = ahora - inicio;
 
-let d=Math.floor(diff/86400000);
-let h=Math.floor(diff/3600000)%24;
-let m=Math.floor(diff/60000)%60;
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor(diff/3600000)%24;
+    const m = Math.floor(diff/60000)%60;
 
-document.getElementById("contador").innerHTML=
-"❤️ Llevamos juntas: "+d+" días · "+h+" h · "+m+" min";
+    document.getElementById("contador").textContent =
+      "❤️ Llevamos juntas: " + d + " días · " + h + " h · " + m + " min";
+  }
+  setInterval(actualizar, 60000);
+  actualizar();
 }
-
-setInterval(actualizar,60000);
-actualizar();
-
 </script>
 
 </body>
