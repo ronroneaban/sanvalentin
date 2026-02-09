@@ -2,23 +2,44 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Para mi amor ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>San Valentín</title>
 
 <style>
 body{
+margin:0;
 font-family: Arial;
-background:#ff4d8d;
+background:#c4002f;
 color:white;
-text-align:center;
-padding:40px;
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:100vh;
+padding:20px;
 }
 
-button{
-padding:15px;
-font-size:20px;
-border:none;
-border-radius:10px;
-cursor:pointer;
+.caja{
+max-width:700px;
+background:rgba(255,255,255,0.15);
+padding:25px;
+border-radius:20px;
+}
+
+h1{
+font-size:42px;
+text-align:center;
+}
+
+.texto{
+font-size:22px;
+line-height:1.6;
+}
+
+.final{
+font-size:24px;
+font-weight:bold;
+text-align:center;
+margin-top:20px;
 }
 </style>
 
@@ -26,17 +47,19 @@ cursor:pointer;
 
 <body>
 
-<h1>Feliz San Valentín ❤️</h1>
+<div class="caja">
 
-<p>Eres lo mejor que me ha pasado</p>
+<h1>¡Feliz San Valentín!</h1>
 
-<button onclick="sorpresa()">Abrir sorpresa 🎁</button>
+<p class="texto">
+Texto por definir
+</p>
 
-<script>
-function sorpresa(){
-alert("Te amo muchísimo ❤️");
-}
-</script>
+<p class="final">
+Para continuar con la sorpresa, abre la CAJA1 y lee la siguiente etiqueta
+</p>
+
+</div>
 
 </body>
 </html>
