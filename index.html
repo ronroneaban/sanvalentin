@@ -31,15 +31,57 @@ body{
   height:100dvh;
   width:100vw;
 
+  position:relative;
+  padding:22px;
+}
+
+/* EMOJIS FLOTANDO */
+.hearts{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:1;
+}
+.heart{
+  position:absolute;
+  bottom:-40px;
+  font-size:22px;
+  animation:subir linear infinite;
+}
+@keyframes subir{
+  from{transform:translateY(0); opacity:0.7;}
+  to{transform:translateY(-120vh); opacity:0;}
+}
+
+/* CABECERA ARRIBA (FUERA) */
+.header{
+  position:fixed;
+  top: calc(14px + env(safe-area-inset-top));
+  left:0;
+  right:0;
+  text-align:center;
+  padding:0 14px;
+  z-index:5;
+}
+.header h1{
+  font-family:'Agrandir', sans-serif;
+  margin:0;
+  color:white;
+  font-size:clamp(24px, 7vw, 44px);
+  line-height:1.05;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* CONTENEDOR CENTRAL */
+.center{
+  height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
-
-  padding:22px;
-  position:relative;
 }
 
-/* CAJA PRINCIPAL */
+/* CUADRO PRINCIPAL */
 .caja{
   width:min(700px, calc(100% - 18px));
   background:var(--glass);
@@ -53,32 +95,14 @@ body{
     0 0 10px rgba(255,255,255,0.18),
     0 0 26px rgba(255,255,255,0.12),
     0 18px 60px rgba(0,0,0,0.35);
-
-  animation: aparecer 0.6s ease;
 }
 
-/* PC: 1 línea */
-h1{
-  font-family:'Agrandir', sans-serif;
-  margin:0 0 10px;
-  white-space:nowrap;
-  font-size:clamp(26px, 4.2vw, 48px);
-}
-
-/* MÓVIL: puede partir línea si hace falta */
-@media (max-width:420px){
-  h1{
-    white-space:normal;
-    line-height:1.05;
-    font-size:clamp(24px, 7vw, 36px);
-  }
-}
-
+/* TEXTO */
 .texto{
   font-size:clamp(18px, 4.8vw, 20px);
   line-height:1.55;
-  margin:10px 0 0;
-  min-height:86px;
+  margin:0;
+  min-height:96px;
 }
 
 /* CUADRO CONTINUAR */
@@ -86,7 +110,6 @@ h1{
   position:fixed;
   left:50%;
   transform:translateX(-50%) translateY(10px);
-
   width:min(700px, calc(100% - 18px));
   background:var(--glass);
   border:1px solid var(--border);
@@ -110,8 +133,8 @@ h1{
     0 0 22px rgba(255,255,255,0.14);
 
   bottom: calc(42px + env(safe-area-inset-bottom));
+  z-index:5;
 }
-
 .caja-continuar.mostrar{
   opacity:1;
   transform:translateX(-50%) translateY(0);
@@ -128,44 +151,132 @@ h1{
   opacity:0.9;
   padding:0 14px;
   line-height:1.2;
+  z-index:5;
 }
 
 /* ANIMACIONES */
-@keyframes aparecer{
-  from{opacity:0; transform:translateY(18px);}
-  to{opacity:1; transform:translateY(0);}
-}
-
 @keyframes latido{
   0%{transform:translateX(-50%) scale(1);}
   40%{transform:translateX(-50%) scale(1.03);}
   100%{transform:translateX(-50%) scale(1);}
 }
-
 @keyframes brilloSuave{
   0%{ box-shadow:0 0 6px rgba(255,255,255,0.15), 0 0 16px rgba(255,255,255,0.10); }
   50%{ box-shadow:0 0 14px rgba(255,255,255,0.32), 0 0 28px rgba(255,255,255,0.20); }
   100%{ box-shadow:0 0 6px rgba(255,255,255,0.15), 0 0 16px rgba(255,255,255,0.10); }
 }
 
-/* EMOJIS */
-.hearts{
+/* --- PANTALLA CONTRASEÑA --- */
+.lock-overlay{
   position:fixed;
   inset:0;
+  z-index:999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(6px);
+}
+
+.lock-card{
+  width:min(520px, calc(100% - 18px));
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+  text-align:center;
+
+  box-shadow:
+    0 0 10px rgba(255,255,255,0.18),
+    0 0 26px rgba(255,255,255,0.12),
+    0 18px 60px rgba(0,0,0,0.45);
+
+  animation: popIn 420ms ease;
+}
+
+.lock-title{
+  font-family:'Agrandir', sans-serif;
+  font-size:clamp(20px, 6vw, 32px);
+  margin:0 0 8px;
+}
+
+.lock-sub{
+  margin:0 0 14px;
+  opacity:0.9;
+  font-size:15px;
+  line-height:1.4;
+}
+
+.lock-input{
+  width: min(260px, 80%);
+  padding:14px 16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.10);
+  color:white;
+  font-size:20px;
+  text-align:center;
+  outline:none;
+}
+
+.lock-input::placeholder{ color: rgba(255,255,255,0.75); }
+
+.lock-btn{
+  margin-top:12px;
+  padding:12px 16px;
+  border-radius:14px;
+  border:none;
+  background:white;
+  color:#111;
+  font-family:'Agrandir', sans-serif;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.lock-msg{
+  margin-top:12px;
+  font-size:14px;
+  line-height:1.35;
+  opacity:0.95;
+  min-height:40px;
+}
+
+/* Animación error */
+.shake{
+  animation: shake 360ms ease;
+}
+@keyframes shake{
+  0%{transform:translateX(0);}
+  20%{transform:translateX(-8px);}
+  40%{transform:translateX(8px);}
+  60%{transform:translateX(-6px);}
+  80%{transform:translateX(6px);}
+  100%{transform:translateX(0);}
+}
+
+@keyframes popIn{
+  from{opacity:0; transform:translateY(12px) scale(0.98);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+
+.fadeOut{
+  animation: fadeOut 360ms ease forwards;
+}
+@keyframes fadeOut{
+  from{opacity:1;}
+  to{opacity:0;}
+}
+
+/* Al principio ocultamos el resto hasta que acierte */
+.hidden{
+  opacity:0;
   pointer-events:none;
-  overflow:hidden;
 }
-
-.heart{
-  position:absolute;
-  bottom:-40px;
-  font-size:22px;
-  animation:subir linear infinite;
-}
-
-@keyframes subir{
-  from{transform:translateY(0); opacity:0.7;}
-  to{transform:translateY(-120vh); opacity:0;}
+.visible{
+  opacity:1;
+  pointer-events:auto;
+  transition:opacity 300ms ease;
 }
 </style>
 </head>
@@ -173,63 +284,173 @@ h1{
 <body>
 
 <div class="hearts">
-<div class="heart" style="left:10%;animation-duration:10s;">♥️</div>
-<div class="heart" style="left:30%;animation-duration:12s;">🐭</div>
-<div class="heart" style="left:60%;animation-duration:11s;">❤️‍🩹</div>
-<div class="heart" style="left:80%;animation-duration:13s;">❤️‍🔥</div>
+  <div class="heart" style="left:10%;animation-duration:10s;">♥️</div>
+  <div class="heart" style="left:30%;animation-duration:12s;">🐭</div>
+  <div class="heart" style="left:60%;animation-duration:11s;">❤️‍🩹</div>
+  <div class="heart" style="left:80%;animation-duration:13s;">❤️‍🔥</div>
 </div>
 
-<div class="caja">
-<h1>¡Feliz San Valentín!</h1>
-<p class="texto" id="textoEscribiendo"></p>
+<!-- OVERLAY CONTRASEÑA -->
+<div class="lock-overlay" id="lockOverlay">
+  <div class="lock-card" id="lockCard">
+    <h2 class="lock-title">🔐 Contraseña de amor</h2>
+    <p class="lock-sub">Vale… antes de entrar… dime el código secreto 😌</p>
+
+    <input
+      class="lock-input"
+      id="passInput"
+      type="password"
+      inputmode="numeric"
+      maxlength="4"
+      placeholder="••••"
+      autocomplete="off"
+    />
+
+    <br>
+    <button class="lock-btn" id="btnEnter">Entrar 💘</button>
+
+    <div class="lock-msg" id="lockMsg"></div>
+  </div>
 </div>
 
-<div class="caja-continuar" id="continuarBox">
-❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 1 y lee la siguiente etiqueta NFC
-</div>
+<!-- TODO EL CONTENIDO (OCULTO HASTA ACERTAR) -->
+<div id="mainContent" class="hidden">
 
-<div class="contador" id="contador"></div>
+  <div class="header">
+    <h1>¡Feliz San Valentín!</h1>
+  </div>
+
+  <div class="center">
+    <div class="caja">
+      <p class="texto" id="textoEscribiendo"></p>
+    </div>
+  </div>
+
+  <div class="caja-continuar" id="continuarBox">
+    ❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 1 y lee la siguiente etiqueta NFC
+  </div>
+
+  <div class="contador" id="contador"></div>
+
+</div>
 
 <script>
 function vibrar(ms){
-try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
+  try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
 }
 
-const mensaje="Eres la casualidad más bonita que llegó a mi vida ❤️";
-let i=0;
+const PASSWORD = "0803";
+let intentos = 0;
 
-function escribir(){
-if(i<mensaje.length){
-document.getElementById("textoEscribiendo").innerHTML+=mensaje.charAt(i);
-i++;
-setTimeout(escribir,40);
-}else{
-setTimeout(()=>{
-document.getElementById("continuarBox").classList.add("mostrar");
-vibrar(25);
-},3000);
+const pistas = [
+  "👀 Pista 1: son 4 números.",
+  "📅 Pista 2: te suena… es una fecha importante.",
+  "💖 Pista 3: empieza por 08…",
+  "😏 Pista 4: 0803 (te lo mereces por insistir 😂)"
+];
+
+const bromas = [
+  "Noooo 😭 ese no es… pero me encanta tu seguridad.",
+  "Casi… (bueno, no) 😌 prueba otra vez, amor.",
+  "Ese código no abre esto… ¡abre mi corazón! (pero tampoco era 😭)",
+  "Error 404: código correcto no encontrado 💅"
+];
+
+const lockOverlay = document.getElementById("lockOverlay");
+const lockCard = document.getElementById("lockCard");
+const passInput = document.getElementById("passInput");
+const btnEnter = document.getElementById("btnEnter");
+const lockMsg = document.getElementById("lockMsg");
+
+const mainContent = document.getElementById("mainContent");
+
+function mostrarMensajeError(){
+  const broma = bromas[intentos % bromas.length];
+  const pista = pistas[Math.min(intentos, pistas.length-1)];
+  lockMsg.innerHTML = "❌ " + broma + "<br>" + pista;
+
+  lockCard.classList.remove("shake");
+  void lockCard.offsetWidth; // reinicia animación
+  lockCard.classList.add("shake");
+
+  vibrar(30);
 }
+
+function desbloquear(){
+  // Mostrar contenido
+  mainContent.classList.remove("hidden");
+  mainContent.classList.add("visible");
+
+  // Cerrar overlay con animación
+  lockOverlay.classList.add("fadeOut");
+  setTimeout(()=>{
+    lockOverlay.style.display = "none";
+  }, 360);
+
+  vibrar(40);
+
+  // Arrancar lo demás
+  iniciarTextoYContador();
 }
-escribir();
 
-/* CONTADOR */
-const fechaInicio=new Date(2025,2,8);
-
-function actualizarContador(){
-const ahora=new Date();
-const diferencia=ahora-fechaInicio;
-
-const dias=Math.floor(diferencia/(1000*60*60*24));
-const horas=Math.floor((diferencia/(1000*60*60))%24);
-const minutos=Math.floor((diferencia/(1000*60))%60);
-
-/* 💘 CAMBIO AQUÍ */
-document.getElementById("contador").innerHTML=
-"♥️ Llevamos juntas: "+dias+" días · "+horas+" h · "+minutos+" min";
+function comprobar(){
+  const val = passInput.value.trim();
+  if(val === PASSWORD){
+    lockMsg.innerHTML = "✅ Perfecto 😍";
+    desbloquear();
+  } else {
+    intentos++;
+    mostrarMensajeError();
+    passInput.value = "";
+    passInput.focus();
+  }
 }
 
-setInterval(actualizarContador,60000);
-actualizarContador();
+btnEnter.addEventListener("click", comprobar);
+passInput.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter") comprobar();
+});
+
+// foco automático
+setTimeout(()=>passInput.focus(), 200);
+
+/* --- LO DE ANTES --- */
+function iniciarTextoYContador(){
+  const mensaje="Eres la casualidad más bonita que llegó a mi vida ❤️";
+  let i=0;
+
+  function escribir(){
+    if(i<mensaje.length){
+      document.getElementById("textoEscribiendo").innerHTML += mensaje.charAt(i);
+      i++;
+      setTimeout(escribir, 40);
+    } else {
+      setTimeout(()=>{
+        document.getElementById("continuarBox").classList.add("mostrar");
+        vibrar(25);
+      }, 3000);
+    }
+  }
+  escribir();
+
+  // Contador
+  const fechaInicio=new Date(2025,2,8);
+
+  function actualizarContador(){
+    const ahora=new Date();
+    const diferencia=ahora-fechaInicio;
+
+    const dias=Math.floor(diferencia/(1000*60*60*24));
+    const horas=Math.floor((diferencia/(1000*60*60))%24);
+    const minutos=Math.floor((diferencia/(1000*60))%60);
+
+    document.getElementById("contador").innerHTML =
+      "♥️ Llevamos juntas: "+dias+" días · "+horas+" h · "+minutos+" min";
+  }
+
+  setInterval(actualizarContador, 60000);
+  actualizarContador();
+}
 </script>
 
 </body>
