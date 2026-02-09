@@ -6,113 +6,138 @@
 <title>Feliz San Valentín</title>
 
 <style>
-
 /* FUENTES */
 @font-face { font-family:'Agrandir'; src:url('./Agrandir-GrandHeavy.otf') format('opentype'); }
 @font-face { font-family:'Garet'; src:url('./Spacetype - Garet Book.otf') format('opentype'); }
 
-/* BASE */
-body{
+:root{
+  --bg:#d6283f;
+  --glass: rgba(255,255,255,0.18);
+  --border: rgba(255,255,255,0.22);
+}
+
+/* IMPORTANTÍSIMO: quitar scroll REAL */
+html, body{
+  height:100%;
   margin:0;
+  overflow:hidden;
+}
+
+*{ box-sizing:border-box; }
+
+/* BASE (usar dvh para móviles) */
+body{
   font-family:'Garet', sans-serif;
-  background:#d6283f;
+  background:var(--bg);
   color:white;
 
-  height:100vh;
-  overflow:hidden;
+  height:100dvh;           /* ✅ evita el scroll raro en móvil */
+  width:100vw;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  padding:26px;
+  padding:22px;            /* ✅ margen lateral */
   position:relative;
 }
 
-/* CAJA PRINCIPAL CON BRILLO SUAVE */
+/* CAJA PRINCIPAL */
 .caja{
   width:min(700px, calc(100% - 18px));
-  background:rgba(255,255,255,0.18);
-  padding:25px;
-  border-radius:20px;
+  background:var(--glass);
+  padding:24px;
+  border-radius:22px;
   text-align:center;
-  animation:aparecer 0.6s ease;
+
+  border:1px solid var(--border);
 
   box-shadow:
     0 0 10px rgba(255,255,255,0.18),
     0 0 26px rgba(255,255,255,0.12),
     0 18px 60px rgba(0,0,0,0.35);
 
-  border:1px solid rgba(255,255,255,0.22);
+  animation: aparecer 0.6s ease;
 }
 
-/* TITULO */
+/* TÍTULO (NO SE SALE) */
 h1{
   font-family:'Agrandir', sans-serif;
+  margin:0 0 10px;
+
+  /* mantenemos 1 línea, pero con tamaño que sí cabe */
   white-space:nowrap;
-  font-size:clamp(28px,6vw,52px);
-  margin-bottom:10px;
+  font-size:clamp(22px, 7.2vw, 48px); /* ✅ más pequeño en móvil automáticamente */
 }
 
 /* TEXTO */
 .texto{
-  font-size:20px;
-  line-height:1.6;
-  margin-top:15px;
-  min-height:90px;
+  font-size:clamp(18px, 4.8vw, 20px);
+  line-height:1.55;
+  margin:10px 0 0;
+  min-height:86px;
 }
 
-/* CONTADOR */
-.contador{
-  position:absolute;
-  bottom:10px;
-  width:100%;
-  text-align:center;
-  font-size:13px;
-  opacity:0.85;
-  padding:0 14px;
-  line-height:1.2;
-}
-
-/* RECTÁNGULO CONTINUAR (Mismo ancho que la caja principal) */
+/* CUADRO CONTINUAR (FIJO, RECTANGULAR, TEXTO NO SE SALE) */
 .caja-continuar{
-  position:absolute;
+  position:fixed;                 /* ✅ siempre visible, sin depender del scroll */
   left:50%;
   transform:translateX(-50%) translateY(10px);
 
-  /* 🔥 MISMO ANCHO QUE .caja */
-  width:min(700px, calc(100% - 18px));
+  width:min(700px, calc(100% - 18px)); /* ✅ mismo ancho que caja */
+  background:var(--glass);
+  border:1px solid var(--border);
 
-  background:rgba(255,255,255,0.18);
-  padding:18px 22px;
+  padding:16px 18px;
   border-radius:999px;
 
-  font-size:15px;
-  line-height:1.4;
+  font-size:clamp(13px, 3.8vw, 15px);
+  line-height:1.35;
   text-align:center;
 
-  opacity:0;
-  transition:all 0.6s ease;
+  /* ✅ esto evita “texto fuera” */
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
-  border:1px solid rgba(255,255,255,0.22);
+  opacity:0;
+  transition:opacity 0.5s ease, transform 0.5s ease;
 
   box-shadow:
     0 0 8px rgba(255,255,255,0.20),
     0 0 22px rgba(255,255,255,0.14);
 }
 
-/* CUANDO APARECE */
 .caja-continuar.mostrar{
   opacity:1;
   transform:translateX(-50%) translateY(0);
-  animation:
-    latido 900ms ease,
-    brilloSuave 4s ease-in-out infinite;
+  animation: latido 900ms ease, brilloSuave 4s ease-in-out infinite;
+}
+
+/* CONTADOR (FIJO ABAJO, SIEMPRE VISIBLE) */
+.contador{
+  position:fixed;  /* ✅ siempre visible */
+  left:0; right:0;
+
+  /* ✅ respeta móviles con “barra” abajo */
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  text-align:center;
+
+  font-size:12.5px;
+  opacity:0.9;
+  padding:0 14px;
+  line-height:1.2;
+}
+
+/* Para que “Para continuar” no tape el contador:
+   Lo colocamos un poco por encima del contador (más seguro) */
+.caja-continuar{
+  bottom: calc(42px + env(safe-area-inset-bottom));
 }
 
 /* ANIMACIONES */
 @keyframes aparecer{
-  from{opacity:0; transform:translateY(20px);}
+  from{opacity:0; transform:translateY(18px);}
   to{opacity:1; transform:translateY(0);}
 }
 
@@ -124,29 +149,20 @@ h1{
 
 @keyframes brilloSuave{
   0%{
-    box-shadow:
-      0 0 6px rgba(255,255,255,0.15),
-      0 0 16px rgba(255,255,255,0.10);
+    box-shadow: 0 0 6px rgba(255,255,255,0.15), 0 0 16px rgba(255,255,255,0.10);
   }
   50%{
-    box-shadow:
-      0 0 14px rgba(255,255,255,0.35),
-      0 0 28px rgba(255,255,255,0.22);
+    box-shadow: 0 0 14px rgba(255,255,255,0.32), 0 0 28px rgba(255,255,255,0.20);
   }
   100%{
-    box-shadow:
-      0 0 6px rgba(255,255,255,0.15),
-      0 0 16px rgba(255,255,255,0.10);
+    box-shadow: 0 0 6px rgba(255,255,255,0.15), 0 0 16px rgba(255,255,255,0.10);
   }
 }
 
 /* EMOJIS */
 .hearts{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  position:fixed;
+  inset:0;
   pointer-events:none;
   overflow:hidden;
 }
@@ -159,21 +175,15 @@ h1{
 }
 
 @keyframes subir{
-  from{transform:translateY(0); opacity:0.8;}
+  from{transform:translateY(0); opacity:0.7;}
   to{transform:translateY(-120vh); opacity:0;}
 }
 
-/* MÓVIL */
-@media (max-width:420px){
-  body{ padding:22px; }
-  .caja{ padding:22px; }
-  .caja-continuar{
-    font-size:14px;
-    padding:16px 18px;
-  }
-  .texto{ font-size:19px; }
+/* EXTRA: si algún móvil es MUY estrecho, reducimos aún más el título */
+@media (max-width: 360px){
+  h1{ font-size: 22px; }
+  .caja{ padding:20px; }
 }
-
 </style>
 </head>
 
@@ -208,49 +218,35 @@ let i=0;
 
 function escribir(){
   if(i<mensaje.length){
-    document.getElementById("textoEscribiendo").innerHTML+=mensaje.charAt(i);
+    document.getElementById("textoEscribiendo").innerHTML += mensaje.charAt(i);
     i++;
-    setTimeout(escribir,40);
-  }else{
+    setTimeout(escribir, 40);
+  } else {
     setTimeout(()=>{
       document.getElementById("continuarBox").classList.add("mostrar");
       vibrar(25);
-    },3000);
+    }, 3000);
   }
 }
 escribir();
 
 /* CONTADOR */
-const fechaInicio=new Date(2025,2,8);
+const fechaInicio = new Date(2025,2,8);
 
 function actualizarContador(){
-  const ahora=new Date();
-  const diferencia=ahora-fechaInicio;
+  const ahora = new Date();
+  const diferencia = ahora - fechaInicio;
 
-  const dias=Math.floor(diferencia/(1000*60*60*24));
-  const horas=Math.floor((diferencia/(1000*60*60))%24);
-  const minutos=Math.floor((diferencia/(1000*60))%60);
+  const dias = Math.floor(diferencia/(1000*60*60*24));
+  const horas = Math.floor((diferencia/(1000*60*60))%24);
+  const minutos = Math.floor((diferencia/(1000*60))%60);
 
-  document.getElementById("contador").innerHTML=
-    "♥️ Llevamos juntos: "+dias+" días · "+horas+" h · "+minutos+" min";
+  document.getElementById("contador").innerHTML =
+    "♥️ Llevamos juntos: " + dias + " días · " + horas + " h · " + minutos + " min";
 }
-setInterval(actualizarContador,60000);
+
+setInterval(actualizarContador, 60000);
 actualizarContador();
-
-/* POSICIÓN AUTOMÁTICA DEL RECTÁNGULO (para que NO choque con el contador) */
-function ajustarPosiciones(){
-  const continuar = document.getElementById("continuarBox");
-  const contador  = document.getElementById("contador");
-
-  const hContador = contador.getBoundingClientRect().height || 16;
-
-  // margen fijo + altura del contador => siempre arriba de él
-  const bottom = 16 + hContador + 18; // px
-  continuar.style.bottom = bottom + "px";
-}
-
-window.addEventListener("resize", ajustarPosiciones);
-setTimeout(ajustarPosiciones, 50);
 </script>
 
 </body>
