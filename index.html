@@ -6,183 +6,220 @@
 <title>Feliz San Valentín</title>
 
 <style>
+
 /* FUENTES */
 @font-face { font-family:'Agrandir'; src:url('./Agrandir-GrandHeavy.otf') format('opentype'); }
 @font-face { font-family:'Garet'; src:url('./Spacetype - Garet Book.otf') format('opentype'); }
 
 /* BASE */
 body{
-  margin:0;
-  font-family:'Garet', sans-serif;
-  background:#d6283f;
-  color:white;
+margin:0;
+font-family:'Garet', sans-serif;
+background:#d6283f;
+color:white;
 
-  height:100vh;
-  overflow:hidden;
+height:100vh;
+overflow:hidden;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
 
-  position:relative;
+position:relative;
 }
 
-/* CAJA */
+/* CAJA PRINCIPAL */
 .caja{
-  width:100%;
-  max-width:700px;
-  background:rgba(255,255,255,0.15);
-  padding:25px;
-  border-radius:20px;
-  text-align:center;
-  animation: aparecer 0.6s ease;
+width:100%;
+max-width:700px;
+background:rgba(255,255,255,0.15);
+padding:25px;
+border-radius:20px;
+text-align:center;
+animation: aparecer 0.6s ease;
 }
 
-/* TÍTULO */
+/* TITULO */
 h1{
-  font-family:'Agrandir', sans-serif;
-  white-space:nowrap;
-  font-size:clamp(28px,6vw,52px);
-  margin:0 0 10px;
+font-family:'Agrandir', sans-serif;
+white-space:nowrap;
+font-size:clamp(28px,6vw,52px);
+margin-bottom:10px;
 }
 
-/* TEXTO ESCRIBIÉNDOSE */
+/* TEXTO */
 .texto{
-  font-family:'Garet', sans-serif;
-  font-size:20px;
-  line-height:1.6;
-  margin:10px 0 0;
-  min-height:90px;
+font-size:20px;
+line-height:1.6;
+margin-top:15px;
+min-height:90px;
 }
 
-/* FINAL (MÁS PEQUEÑO, OCULTO, ANIMADO) */
-.final{
-  font-family:'Garet', sans-serif;
-  font-size:16px;
-  line-height:1.35;
-  margin-top:18px;
+/* CUADRO CONTINUAR */
+.caja-continuar{
+position:absolute;
+bottom:60px;
+left:50%;
+transform:translateX(-50%) translateY(10px);
 
-  opacity:0;
-  transform: translateY(8px);
-  transition: opacity 500ms ease, transform 500ms ease;
+background:rgba(255,255,255,0.18);
+padding:14px 20px;
+border-radius:16px;
+
+font-size:16px;
+text-align:center;
+
+opacity:0;
+transition:all 0.6s ease;
+
+/* BRILLO SUAVE */
+box-shadow:
+0 0 8px rgba(255,255,255,0.2),
+0 0 20px rgba(255,255,255,0.15);
 }
 
-.final.mostrar{
-  opacity:1;
-  transform: translateY(0);
-  animation: latido 900ms ease-in-out 1;
+/* CUANDO APARECE */
+.caja-continuar.mostrar{
+opacity:1;
+transform:translateX(-50%) translateY(0);
+animation:
+latido 900ms ease,
+brilloSuave 4s ease-in-out infinite;
 }
 
-/* CONTADOR ABAJO */
+/* CONTADOR */
 .contador{
-  position:absolute;
-  left:0; right:0;
-  bottom:10px;
-  text-align:center;
-  font-size:13px;
-  opacity:0.85;
-  padding:0 14px;
-  font-family:'Garet', sans-serif;
+position:absolute;
+bottom:10px;
+width:100%;
+text-align:center;
+font-size:13px;
+opacity:0.85;
 }
 
 /* ANIMACIONES */
+
 @keyframes aparecer{
-  from{opacity:0; transform:translateY(20px);}
-  to{opacity:1; transform:translateY(0);}
+from{opacity:0; transform:translateY(20px);}
+to{opacity:1; transform:translateY(0);}
 }
 
 @keyframes latido{
-  0%   { transform: translateY(0) scale(1); }
-  35%  { transform: translateY(0) scale(1.03); }
-  70%  { transform: translateY(0) scale(1); }
-  100% { transform: translateY(0) scale(1); }
+0%{transform:translateX(-50%) scale(1);}
+40%{transform:translateX(-50%) scale(1.03);}
+100%{transform:translateX(-50%) scale(1);}
+}
+
+/* BRILLO SUAVE */
+@keyframes brilloSuave{
+0%{
+box-shadow:
+0 0 6px rgba(255,255,255,0.15),
+0 0 16px rgba(255,255,255,0.1);
+}
+50%{
+box-shadow:
+0 0 14px rgba(255,255,255,0.35),
+0 0 28px rgba(255,255,255,0.25);
+}
+100%{
+box-shadow:
+0 0 6px rgba(255,255,255,0.15),
+0 0 16px rgba(255,255,255,0.1);
+}
 }
 
 /* EMOJIS */
 .hearts{
-  position:absolute;
-  top:0; left:0;
-  width:100%; height:100%;
-  pointer-events:none;
-  overflow:hidden;
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+overflow:hidden;
 }
+
 .heart{
-  position:absolute;
-  bottom:-40px;
-  font-size:22px;
-  animation: subir linear infinite;
+position:absolute;
+bottom:-40px;
+font-size:22px;
+animation: subir linear infinite;
 }
+
 @keyframes subir{
-  from{transform:translateY(0); opacity:0.8;}
-  to{transform:translateY(-120vh); opacity:0;}
+from{transform:translateY(0); opacity:0.8;}
+to{transform:translateY(-120vh); opacity:0;}
 }
+
 </style>
 </head>
 
 <body>
 
 <div class="hearts">
-  <div class="heart" style="left:10%;animation-duration:10s;">♥️</div>
-  <div class="heart" style="left:30%;animation-duration:12s;">🐭</div>
-  <div class="heart" style="left:60%;animation-duration:11s;">❤️‍🩹</div>
-  <div class="heart" style="left:80%;animation-duration:13s;">❤️‍🔥</div>
+<div class="heart" style="left:10%;animation-duration:10s;">♥️</div>
+<div class="heart" style="left:30%;animation-duration:12s;">🐭</div>
+<div class="heart" style="left:60%;animation-duration:11s;">❤️‍🩹</div>
+<div class="heart" style="left:80%;animation-duration:13s;">❤️‍🔥</div>
 </div>
 
 <div class="caja">
-  <h1>¡Feliz San Valentín!</h1>
+<h1>¡Feliz San Valentín!</h1>
+<p class="texto" id="textoEscribiendo"></p>
+</div>
 
-  <p class="texto" id="textoEscribiendo"></p>
-
-  <p class="final" id="finalMsg">
-    Para continuar con la sorpresa, abre la CAJA 1 y lee la siguiente etiqueta NFC
-  </p>
+<div class="caja-continuar" id="continuarBox">
+Para continuar con la sorpresa, abre la CAJA 1 y lee la siguiente etiqueta NFC
 </div>
 
 <div class="contador" id="contador"></div>
 
 <script>
-/* VIBRACIÓN (si el móvil lo permite) */
+
+/* VIBRAR */
 function vibrar(ms){
-  try{ if(navigator.vibrate) navigator.vibrate(ms); } catch(e){}
+try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
 }
 
-/* TEXTO QUE SE ESCRIBE */
-const mensaje = "Eres la casualidad más bonita que llegó a mi vida ❤️";
-let i = 0;
+/* TEXTO ESCRIBIENDOSE */
+const mensaje="Eres la casualidad más bonita que llegó a mi vida ❤️";
+let i=0;
 
 function escribir(){
-  const el = document.getElementById("textoEscribiendo");
-  if(i < mensaje.length){
-    el.innerHTML += mensaje.charAt(i);
-    i++;
-    setTimeout(escribir, 40);
-  } else {
-    // espera +3s y aparece el mensaje final con animación
-    setTimeout(() => {
-      document.getElementById("finalMsg").classList.add("mostrar");
-      vibrar(25);
-    }, 3000);
-  }
+if(i<mensaje.length){
+document.getElementById("textoEscribiendo").innerHTML+=mensaje.charAt(i);
+i++;
+setTimeout(escribir,40);
+}else{
+setTimeout(()=>{
+document.getElementById("continuarBox").classList.add("mostrar");
+vibrar(25);
+},3000);
 }
+}
+
 escribir();
 
-/* CONTADOR DESDE 8 MARZO 2025 */
-const fechaInicio = new Date(2025, 2, 8); // Marzo=2
+/* CONTADOR */
+const fechaInicio=new Date(2025,2,8);
 
 function actualizarContador(){
-  const ahora = new Date();
-  const diferencia = ahora - fechaInicio;
+const ahora=new Date();
+const diferencia=ahora-fechaInicio;
 
-  const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-  const horas = Math.floor((diferencia / (1000 * 60 * 60)) % 24);
-  const minutos = Math.floor((diferencia / (1000 * 60)) % 60);
+const dias=Math.floor(diferencia/(1000*60*60*24));
+const horas=Math.floor((diferencia/(1000*60*60))%24);
+const minutos=Math.floor((diferencia/(1000*60))%60);
 
-  document.getElementById("contador").innerHTML =
-    "♥️ Llevamos juntos: " + dias + " días · " + horas + " h · " + minutos + " min";
+document.getElementById("contador").innerHTML=
+"♥️ Llevamos juntos: "+dias+" días · "+horas+" h · "+minutos+" min";
 }
-setInterval(actualizarContador, 60000);
+
+setInterval(actualizarContador,60000);
 actualizarContador();
+
 </script>
 
 </body>
