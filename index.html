@@ -6,76 +6,127 @@
 <title>Feliz San Valentín</title>
 
 <style>
-
-/* FUENTES */
-
+/* FUENTES (tus nombres reales) */
 @font-face {
-font-family: 'AgrandirHeavy';
-src: url('./Agrandir-GrandHeavy.otf') format('opentype');
+  font-family: 'AgrandirHeavy';
+  src: url('./Agrandir-GrandHeavy.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GaretBook';
+  src: url('./Spacetype - Garet Book.otf') format('opentype');
 }
 
-@font-face {
-font-family: 'GaretBook';
-src: url('./Spacetype - Garet Book.otf') format('opentype');
+/* BASE */
+:root{
+  --rojo: #d6283f;
+  --glass: rgba(255,255,255,0.16);
+  --borde: rgba(255,255,255,0.25);
+  --sombra: 0 18px 60px rgba(0,0,0,0.35);
 }
 
-/* ESTILO */
+*{ box-sizing:border-box; }
 
 body{
-margin:0;
-font-family:'GaretBook', sans-serif;
-background:#d6283f;
-color:white;
-height:100vh;
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
+  margin:0;
+  font-family:'GaretBook', sans-serif;
+  background: var(--rojo);
+  color:white;
+
+  height:100vh;
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+
+  position:relative;
+}
+
+/* ENTRADA SUAVE */
+@keyframes entrar {
+  from { opacity:0; transform: translateY(14px); }
+  to   { opacity:1; transform: translateY(0); }
 }
 
 .caja{
-max-width:700px;
-background:rgba(255,255,255,0.15);
-padding:25px;
-border-radius:20px;
-text-align:center;
+  width:100%;
+  max-width:720px;
+  background: var(--glass);
+  border:1px solid var(--borde);
+  padding:24px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow: var(--sombra);
+  animation: entrar 500ms ease-out both;
 }
 
 h1{
-font-family:'AgrandirHeavy', sans-serif;
-font-size:42px;
+  font-family:'AgrandirHeavy', sans-serif;
+  font-size: clamp(36px, 7vw, 54px);
+  line-height: 1.05;
+  margin: 0 0 14px;
 }
 
 .texto{
-font-size:20px;
-line-height:1.6;
-margin-top:15px;
+  font-size: clamp(18px, 4.4vw, 22px);
+  line-height:1.6;
+  margin: 0 0 18px;
+  opacity: 0.95;
+  white-space: pre-wrap;
 }
 
 .final{
-font-family:'AgrandirHeavy', sans-serif;
-font-size:24px;
-margin-top:25px;
+  font-family:'AgrandirHeavy', sans-serif;
+  font-size: clamp(18px, 4.6vw, 24px);
+  line-height:1.35;
+  margin: 0;
 }
 
+/* CORAZONES */
+.hearts{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.heart{
+  position:absolute;
+  bottom:-60px;
+  font-size: 18px;
+  opacity: 0.85;
+  animation: floatUp linear infinite;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.20));
+}
+
+@keyframes floatUp{
+  from { transform: translateY(0) translateX(0) scale(1); opacity: 0.0; }
+  10%  { opacity: 0.9; }
+  to   { transform: translateY(-120vh) translateX(30px) scale(1.15); opacity: 0.0; }
+}
 </style>
 </head>
 
 <body>
 
+<!-- Corazones (bonitos y suaves) -->
+<div class="hearts" aria-hidden="true">
+  <div class="heart" style="left:10%; animation-duration: 10s; animation-delay: 0s;">💗</div>
+  <div class="heart" style="left:22%; animation-duration: 12s; animation-delay: 1s;">💘</div>
+  <div class="heart" style="left:35%; animation-duration: 11s; animation-delay: 2s;">❤️</div>
+  <div class="heart" style="left:48%; animation-duration: 13s; animation-delay: 0.5s;">💓</div>
+  <div class="heart" style="left:60%; animation-duration: 10.5s; animation-delay: 1.8s;">💖</div>
+  <div class="heart" style="left:72%; animation-duration: 12.5s; animation-delay: 0.8s;">💞</div>
+  <div class="heart" style="left:84%; animation-duration: 11.5s; animation-delay: 1.2s;">💗</div>
+</div>
+
 <div class="caja">
+  <h1>¡Feliz San Valentín!</h1>
 
-<h1>¡Feliz San Valentín!</h1>
+  <p class="texto">Aquí va tu texto largo romántico ❤️</p>
 
-<p class="texto">
-Aquí va tu texto largo romántico ❤️
-</p>
-
-<p class="final">
-Para continuar con la sorpresa, abre la CAJA 1 y lee la siguiente etiqueta NFC
-</p>
-
+  <p class="final">Para continuar con la sorpresa, abre la CAJA 1 y lee la siguiente etiqueta NFC</p>
 </div>
 
 </body>
