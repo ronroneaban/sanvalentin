@@ -44,6 +44,62 @@ html,body{
   text-shadow: 0 10px 30px rgba(0,0,0,0.22);
 }
 
+/* ===== GADGET 6 (2 puntos + luz) ===== */
+.link-gadget{
+  position:relative;
+  width:140px;
+  height:18px;
+  margin:12px auto 0;
+  opacity:0.95;
+}
+.link-gadget .beam{
+  position:absolute;
+  left:10px;
+  right:10px;
+  top:50%;
+  height:2px;
+  transform:translateY(-50%);
+  border-radius:999px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.20),
+    rgba(255,255,255,0.85),
+    rgba(255,255,255,0.20)
+  );
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.35));
+  animation: beamPulse 2.4s ease-in-out infinite;
+}
+.link-gadget .dot{
+  position:absolute;
+  top:50%;
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  transform:translateY(-50%);
+  background: rgba(255,255,255,0.92);
+  box-shadow:
+    0 0 10px rgba(255,255,255,0.45),
+    0 0 20px rgba(255,255,255,0.18);
+}
+.link-gadget .dot.left{ left:0; animation: dotLeft 2.4s ease-in-out infinite; }
+.link-gadget .dot.right{ right:0; animation: dotRight 2.4s ease-in-out infinite; }
+
+@keyframes beamPulse{
+  0%{ opacity:0.55; transform:translateY(-50%) scaleX(0.94); }
+  50%{ opacity:1; transform:translateY(-50%) scaleX(1.02); }
+  100%{ opacity:0.55; transform:translateY(-50%) scaleX(0.94); }
+}
+
+@keyframes dotLeft{
+  0%{ transform:translateY(-50%) translateX(0); }
+  50%{ transform:translateY(-50%) translateX(10px); }
+  100%{ transform:translateY(-50%) translateX(0); }
+}
+@keyframes dotRight{
+  0%{ transform:translateY(-50%) translateX(0); }
+  50%{ transform:translateY(-50%) translateX(-10px); }
+  100%{ transform:translateY(-50%) translateX(0); }
+}
+
 /* ===== CENTRO (SUBE EL CUADRO) ===== */
 .center{
   height:100%;
@@ -51,7 +107,7 @@ html,body{
   align-items:center;
   justify-content:center;
   padding:0 20px;
-  padding-top:30px; /* ✅ antes 58px -> sube el cuadro */
+  padding-top:30px; /* sube el cuadro */
 }
 
 /* ===== CAJA PRINCIPAL ===== */
@@ -215,6 +271,13 @@ button{
 <!-- HEADER -->
 <div class="header">
   <h1>¡Feliz San Valentín!</h1>
+
+  <!-- ✅ GADGET sin texto -->
+  <div class="link-gadget" aria-hidden="true">
+    <div class="dot left"></div>
+    <div class="beam"></div>
+    <div class="dot right"></div>
+  </div>
 </div>
 
 <!-- CENTRO -->
@@ -273,7 +336,7 @@ function checkPass(){
   }
 }
 
-/* ===== ULTRA: ESCRITURA REALISTA (MÁS LENTA) ===== */
+/* ===== ULTRA: ESCRITURA REALISTA (LENTA) ===== */
 function startUltra(){
   const paragraphs = [
     "No hay nada que me haga más feliz que seguir sumando momentos a tu lado.",
@@ -288,14 +351,10 @@ function startUltra(){
   let c = 0;
 
   function delayForChar(ch){
-    // ✅ base MUCHO más lenta
     let d = 62 + Math.random()*28;
-
-    // pausas “humanas”
     if(ch === ",") d = 260 + Math.random()*160;
     if(ch === "." || ch === "!" || ch === "?" ) d = 520 + Math.random()*260;
     if(ch === " ") d = 40 + Math.random()*20;
-
     return d;
   }
 
@@ -321,7 +380,7 @@ function startUltra(){
       if(p < paragraphs.length){
         target.textContent += "\n\n";
       }
-      setTimeout(typeNext, 800); // ✅ pausa entre párrafos un poco mayor
+      setTimeout(typeNext, 800);
     }
   }
 
