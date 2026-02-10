@@ -61,28 +61,29 @@ body{
   cursor:pointer;
 }
 
-/* Barra corazones */
+/* Barra corazones (BLANCOS) */
 .hearts{
   margin-top:20px;
   font-size:22px;
   letter-spacing:6px;
-  opacity:0.5;
+  opacity:0.65;
   transition:opacity 0.3s;
+  user-select:none;
 }
 
 .hearts.active{
   opacity:1;
 }
 
-/* Modal */
+/* Modal centrado */
 .modal{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.55);
   backdrop-filter: blur(8px);
   display:flex;
-  align-items:flex-end;
-  justify-content:center;
+  align-items:center;      /* ✅ CENTRADO VERTICAL */
+  justify-content:center;  /* ✅ CENTRADO HORIZONTAL */
   padding:18px;
   z-index:30;
 
@@ -96,7 +97,7 @@ body{
   pointer-events:auto;
 }
 
-/* Foto carta desde abajo */
+/* Foto estilo carta: entra desde abajo pero acaba centrada */
 .foto{
   max-width:92vw;
   max-height:86vh;
@@ -104,16 +105,15 @@ body{
   border:1px solid rgba(255,255,255,0.18);
   box-shadow: 0 18px 60px rgba(0,0,0,0.55);
 
-  transform: translateY(120px);
+  transform: translateY(80px); /* entra desde abajo */
   opacity:0;
-  transition: transform 500ms ease, opacity 500ms ease;
+  transition: transform 520ms ease, opacity 520ms ease;
 }
 
 .modal.open .foto{
-  transform: translateY(0);
+  transform: translateY(0); /* ✅ queda centrada */
   opacity:1;
 }
-
 </style>
 </head>
 
@@ -128,44 +128,41 @@ body{
 </div>
 
 <div class="modal" id="modal">
+  <!-- ✅ PON AQUÍ TU FOTO REAL -->
   <img class="foto" src="img1.jpg" alt="Foto" />
 </div>
 
 <script>
-
 const abrirBtn = document.getElementById("abrirBtn");
 const modal = document.getElementById("modal");
 const hearts = document.getElementById("hearts");
 
 function vibrar(ms){
-  if(navigator.vibrate) navigator.vibrate(ms);
+  try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
 }
 
 abrirBtn.addEventListener("click", async () => {
+  vibrar(18);
 
-  vibrar(20);
-
-  const corazones = ["❤️","❤️","❤️","❤️","❤️"];
-  let salida = "";
-
+  // corazones blancos
+  const total = 5;
   hearts.classList.add("active");
+  hearts.innerHTML = "🤍 🤍 🤍 🤍 🤍";
 
-  for(let i=0;i<corazones.length;i++){
-    salida += corazones[i] + " ";
-    hearts.innerHTML = salida;
-    await new Promise(r=>setTimeout(r,220));
+  let salida = "";
+  for(let i=0;i<total;i++){
+    salida += "🤍 ";
+    hearts.innerHTML = salida.trim();
+    await new Promise(r=>setTimeout(r,320)); // ✅ más lento (antes 220)
   }
 
-  setTimeout(()=>{
-    modal.classList.add("open");
-  },300);
-
+  setTimeout(()=> modal.classList.add("open"), 260);
 });
 
+// cerrar tocando cualquier parte
 modal.addEventListener("click", ()=>{
   modal.classList.remove("open");
 });
-
 </script>
 
 </body>
