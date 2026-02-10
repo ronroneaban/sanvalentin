@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>❤️</title>
 
 <style>
-@font-face{ font-family:"Agrandir"; src:url("Agrandir-GrandHeavy.otf"); }
-@font-face{ font-family:"Garet"; src:url("Spacetype - Garet Book.otf"); }
+@font-face{ font-family:"Agrandir"; src:url("Agrandir-GrandHeavy.otf") format("opentype"); }
+@font-face{ font-family:"Garet"; src:url("Spacetype - Garet Book.otf") format("opentype"); }
 
 :root{
   --bg:#d6283f;
@@ -15,25 +15,40 @@
   --border: rgba(255,255,255,0.22);
 }
 
+*{ box-sizing:border-box; }
+
 html,body{
-  margin:0;
   height:100%;
+  margin:0;
   overflow:hidden;
   background:var(--bg);
-  font-family:"Garet";
   color:white;
+  font-family:"Garet", Arial;
 }
 
 body{
   display:flex;
   align-items:center;
   justify-content:center;
+  padding:22px;
+  position:relative;
 }
 
-/* Caja */
-.caja{
-  width:90%;
-  max-width:520px;
+/* ===== Pantalla Juego Slot ===== */
+.game{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  background:var(--bg);
+  transition: opacity 350ms ease;
+}
+.game.hide{ opacity:0; pointer-events:none; }
+
+.game-box{
+  width:min(560px, 92%);
   padding:26px;
   border-radius:26px;
   background:var(--glass);
@@ -43,172 +58,324 @@ body{
   text-align:center;
 }
 
-.titulo{
+.game-title{
   font-family:"Agrandir";
   font-size:28px;
-  margin-bottom:20px;
+  margin:0 0 14px;
 }
 
-/* Canvas laberinto */
-canvas{
-  width:100%;
-  max-width:420px;
-  height:auto;
-  background:rgba(255,255,255,0.1);
-  border-radius:18px;
+.reels{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  align-items:center;
+  margin: 10px 0 18px;
 }
 
-/* Modal foto */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.6);
+.reel{
+  width:min(110px, 26vw);
+  height:min(110px, 26vw);
+  max-width:120px;
+  max-height:120px;
+
+  border-radius:22px;
+  background:rgba(255,255,255,0.14);
+  border:1px solid rgba(255,255,255,0.22);
+  backdrop-filter: blur(10px);
+  box-shadow:0 0 26px rgba(255,255,255,0.12);
+
   display:flex;
   align-items:center;
   justify-content:center;
+
+  font-size:46px;
+  user-select:none;
+  position:relative;
+  overflow:hidden;
+}
+
+.reel::after{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background: radial-gradient(circle, rgba(255,255,255,0.22), rgba(255,255,255,0) 60%);
+  transform: rotate(20deg);
+  opacity:0.55;
+  pointer-events:none;
+}
+
+.spin{
+  animation: shake 0.28s ease-in-out infinite;
+}
+@keyframes shake{
+  0%{ transform:translateY(0); }
+  50%{ transform:translateY(2px); }
+  100%{ transform:translateY(0); }
+}
+
+.btn{
+  width:min(320px, 88%);
+  border:none;
+  border-radius:22px;
+  padding:16px 20px;
+
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.26);
+  color:white;
+
+  font-family:"Agrandir";
+  font-size:20px;
+
+  box-shadow:
+    0 0 18px rgba(255,255,255,0.18),
+    0 18px 50px rgba(0,0,0,0.20);
+
+  cursor:pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.btn:active{ transform:scale(0.98); }
+
+.game-msg{
+  margin-top:14px;
+  font-size:15px;
+  opacity:0.92;
+  min-height:22px;
+}
+
+/* ===== Contenido (Abrir + foto) ===== */
+.wrap{
+  width:100%;
+  max-width:520px;
+  text-align:center;
+  opacity:0;
+  transform: translateY(6px);
+  pointer-events:none;
+  transition: opacity 450ms ease, transform 450ms ease;
+}
+.wrap.show{ opacity:1; transform: translateY(0); pointer-events:auto; }
+
+.caja{
+  width:100%;
+  padding:28px;
+  border-radius:26px;
+  background:var(--glass);
+  backdrop-filter: blur(14px);
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(255,255,255,0.18);
+}
+
+.hearts{
+  margin-top:20px;
+  font-size:22px;
+  letter-spacing:6px;
+  opacity:0.85;
+  user-select:none;
+  color:white;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:30;
   opacity:0;
   pointer-events:none;
-  transition:.4s;
+  transition: opacity 260ms ease;
 }
+.modal.open{ opacity:1; pointer-events:auto; }
 
-.modal.open{
-  opacity:1;
-  pointer-events:auto;
+.foto{
+  max-width:92vw;
+  max-height:86vh;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+  transform: translateY(80px);
+  opacity:0;
+  transition: transform 520ms ease, opacity 520ms ease;
 }
+.modal.open .foto{ transform: translateY(0); opacity:1; }
 
-.modal img{
-  max-width:90vw;
-  max-height:85vh;
-  border-radius:20px;
-}
-
-/* Para continuar */
-.continuar{
+/* ===== Para continuar ===== */
+.caja-continuar{
   position:fixed;
-  bottom:30px;
   left:50%;
   transform:translateX(-50%);
-  background:var(--glass);
-  backdrop-filter: blur(10px);
-  border:1px solid var(--border);
+  bottom: calc(22px + env(safe-area-inset-bottom));
+  width:92%;
+  max-width:520px;
+  padding:14px 22px;
   border-radius:40px;
-  padding:14px 24px;
+  background:var(--glass);
+  backdrop-filter: blur(12px);
+  border:1px solid var(--border);
+  box-shadow:0 0 35px rgba(255,255,255,0.18);
+  text-align:center;
+  font-size:clamp(14px, 3.8vw, 16px);
   opacity:0;
-  transition:.6s;
+  transition:0.8s;
+  z-index:35;
+  pointer-events:none;
 }
+.caja-continuar.show{ opacity:1; }
 
-.continuar.show{ opacity:1; }
+/* accesibilidad (reduce motion) */
+@media (prefers-reduced-motion: reduce){
+  .spin{ animation:none; }
+}
 </style>
 </head>
 
 <body>
 
-<div class="caja">
-  <div class="titulo">Laberinto</div>
-  <canvas id="maze" width="400" height="400"></canvas>
+<!-- JUEGO SLOT -->
+<div class="game" id="game">
+  <div class="game-box">
+    <h2 class="game-title">Slot</h2>
+
+    <div class="reels">
+      <div class="reel" id="r1">🐭</div>
+      <div class="reel" id="r2">🐶</div>
+      <div class="reel" id="r3">🐱</div>
+    </div>
+
+    <button class="btn" id="spinBtn">Girar</button>
+    <div class="game-msg" id="gameMsg"></div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="wrap" id="wrap">
+  <div class="caja">
+    <button class="btn" id="abrirBtn">Abrir</button>
+    <div class="hearts" id="hearts">🤍 🤍 🤍 🤍 🤍</div>
+  </div>
 </div>
 
 <div class="modal" id="modal">
-  <img src="foto2.jpg">
+  <img class="foto" id="foto" src="img2.jpg" alt="Foto" />
 </div>
 
-<div class="continuar" id="continuar">
-🔥 Para continuar con la sorpresa, abre la CAJA 3
+<div class="caja-continuar" id="continuarBox">
+  ❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 3
 </div>
 
 <script>
-const canvas = document.getElementById("maze");
-const ctx = canvas.getContext("2d");
+function vibrar(ms){
+  try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
+}
 
-const size = 20;
-const player = {x:1,y:1};
+const game = document.getElementById("game");
+const wrap = document.getElementById("wrap");
 
-const maze = [
-[1,1,1,1,1,1,1,1,1,1],
-[1,0,0,0,1,0,0,0,0,1],
-[1,0,1,0,1,0,1,1,0,1],
-[1,0,1,0,0,0,0,1,0,1],
-[1,0,1,1,1,1,0,1,0,1],
-[1,0,0,0,0,1,0,0,0,1],
-[1,1,1,1,0,1,1,1,0,1],
-[1,0,0,1,0,0,0,1,0,1],
-[1,0,0,0,0,1,0,0,0,1],
-[1,1,1,1,1,1,1,1,1,1]
-];
+const r1 = document.getElementById("r1");
+const r2 = document.getElementById("r2");
+const r3 = document.getElementById("r3");
+const spinBtn = document.getElementById("spinBtn");
+const gameMsg = document.getElementById("gameMsg");
 
-const goal = {x:8,y:8};
+const abrirBtn = document.getElementById("abrirBtn");
+const modal = document.getElementById("modal");
+const hearts = document.getElementById("hearts");
+const continuarBox = document.getElementById("continuarBox");
 
-function draw(){
-  ctx.clearRect(0,0,400,400);
+let spinning = false;
+let tries = 0;
 
-  for(let y=0;y<maze.length;y++){
-    for(let x=0;x<maze[y].length;x++){
-      if(maze[y][x]===1){
-        ctx.fillStyle="rgba(255,255,255,0.5)";
-        ctx.fillRect(x*size,y*size,size,size);
-      }
+// emojis para “confundir”
+const pool = ["🐭","🐶","🐱","🐰","🐹","🦊","🐻","🐼","🐨","🦁","🐯","🐸","🦄","❤️‍🔥","❤️‍🩹","♥️","❤️"];
+
+// el premio (en el 3er intento gana fijo)
+const WIN = "❤️‍🔥";
+
+function pickRandom(){
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function setReels(a,b,c){
+  r1.textContent = a;
+  r2.textContent = b;
+  r3.textContent = c;
+}
+
+function addSpinClass(on){
+  [r1,r2,r3].forEach(el => {
+    el.classList.toggle("spin", on);
+  });
+}
+
+async function spin(){
+  if(spinning) return;
+  spinning = true;
+  tries++;
+  gameMsg.textContent = "";
+  vibrar(20);
+
+  addSpinClass(true);
+  spinBtn.disabled = true;
+
+  // durante ~1.6s cambia símbolos rápido
+  const start = Date.now();
+  const duration = 1600;
+  while(Date.now() - start < duration){
+    setReels(pickRandom(), pickRandom(), pickRandom());
+    await new Promise(r => setTimeout(r, 85));
+  }
+
+  // resultado final
+  if(tries < 3){
+    // pierde a propósito 2 veces
+    let a = pickRandom(), b = pickRandom(), c = pickRandom();
+    // aseguramos que NO sean iguales los 3
+    while(a === b && b === c){
+      a = pickRandom(); b = pickRandom(); c = pickRandom();
     }
+    setReels(a,b,c);
+    gameMsg.textContent = "Casi... 🙈";
+    vibrar(12);
+  } else {
+    // gana fijo
+    setReels(WIN, WIN, WIN);
+    gameMsg.textContent = "¡Premio!";
+    vibrar(30);
+
+    setTimeout(()=>{
+      game.classList.add("hide");
+      wrap.classList.add("show");
+    }, 650);
   }
 
-  ctx.font="20px Arial";
-  ctx.fillText("🐭", player.x*size+2, player.y*size+18);
-  ctx.fillText("🧀", goal.x*size+2, goal.y*size+18);
+  addSpinClass(false);
+  spinBtn.disabled = false;
+  spinning = false;
 }
 
-function move(dx,dy){
-  const nx = player.x+dx;
-  const ny = player.y+dy;
-  if(maze[ny][nx]===0){
-    player.x=nx;
-    player.y=ny;
-    draw();
+spinBtn.addEventListener("click", spin);
 
-    if(player.x===goal.x && player.y===goal.y){
-      win();
-    }
+/* Abrir + corazones + foto */
+abrirBtn.addEventListener("click", async ()=>{
+  vibrar(18);
+
+  // corazones más lentos y blancos
+  let salida="";
+  for(let i=0;i<5;i++){
+    salida+="🤍 ";
+    hearts.innerHTML = salida.trim();
+    await new Promise(r=>setTimeout(r,420));
   }
-}
 
-function win(){
-  setTimeout(()=>{
-    document.getElementById("modal").classList.add("open");
-  },600);
+  setTimeout(()=> modal.classList.add("open"), 200);
 
-  setTimeout(()=>{
-    document.getElementById("continuar").classList.add("show");
-  },3500);
-}
-
-window.addEventListener("keydown", e=>{
-  if(e.key==="ArrowUp") move(0,-1);
-  if(e.key==="ArrowDown") move(0,1);
-  if(e.key==="ArrowLeft") move(-1,0);
-  if(e.key==="ArrowRight") move(1,0);
+  // ✅ mensaje a los 5 segundos
+  setTimeout(()=> continuarBox.classList.add("show"), 5000);
 });
 
-/* CONTROLES MÓVIL */
-let touchStartX=0;
-let touchStartY=0;
-
-canvas.addEventListener("touchstart", e=>{
-  touchStartX=e.touches[0].clientX;
-  touchStartY=e.touches[0].clientY;
-});
-
-canvas.addEventListener("touchend", e=>{
-  let dx=e.changedTouches[0].clientX-touchStartX;
-  let dy=e.changedTouches[0].clientY-touchStartY;
-
-  if(Math.abs(dx)>Math.abs(dy)){
-    if(dx>20) move(1,0);
-    if(dx<-20) move(-1,0);
-  }else{
-    if(dy>20) move(0,1);
-    if(dy<-20) move(0,-1);
-  }
-});
-
-draw();
+modal.addEventListener("click", ()=> modal.classList.remove("open"));
 </script>
 
 </body>
