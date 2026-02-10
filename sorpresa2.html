@@ -52,7 +52,7 @@ body{
   font-size:clamp(14px, 3.8vw, 16px);
   opacity:0;
   transition:0.8s;
-  z-index:35;        /* encima del modal */
+  z-index:35;
   pointer-events:none;
 }
 .caja-continuar.show{ opacity:1; }
@@ -218,7 +218,7 @@ const rows = grid.length, cols = grid[0].length;
 const startCell = { r:1, c:1 }, goalCell = { r:9, c:13 };
 
 let cellW=0, cellH=0;
-let player = { x:0, y:0 }; // posición del 🐭 en px
+let player = { x:0, y:0 };
 let dragging=false;
 
 function resizeCanvas(){
@@ -226,8 +226,10 @@ function resizeCanvas(){
   canvas.width = Math.floor(rect.width * devicePixelRatio);
   canvas.height = Math.floor(rect.height * devicePixelRatio);
   ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+
   cellW = rect.width/cols;
   cellH = rect.height/rows;
+
   resetPlayer();
   draw();
 }
@@ -236,8 +238,9 @@ function cellCenter(r,c){ return { x:(c+0.5)*cellW, y:(r+0.5)*cellH }; }
 
 function resetPlayer(){
   const p = cellCenter(startCell.r,startCell.c);
-  player.x=p.x; player.y=p.y;
-  gameMsg.textContent="";
+  player.x = p.x;
+  player.y = p.y;
+  gameMsg.textContent = "";
 }
 
 function inWall(x,y){
@@ -245,6 +248,7 @@ function inWall(x,y){
   if(r<0||r>=rows||c<0||c>=cols) return true;
   return grid[r][c]===1;
 }
+
 function reachedGoal(x,y){
   const c = Math.floor(x/cellW), r = Math.floor(y/cellH);
   return r===goalCell.r && c===goalCell.c;
@@ -254,36 +258,37 @@ function draw(){
   const rect = board.getBoundingClientRect();
   ctx.clearRect(0,0,rect.width,rect.height);
 
-  // paredes
+  // paredes (más visibles)
   for(let r=0;r<rows;r++){
     for(let c=0;c<cols;c++){
       if(grid[r][c]===1){
-        ctx.fillStyle="rgba(255,255,255,0.22)";
+        ctx.fillStyle="rgba(255,255,255,0.28)";
         ctx.fillRect(c*cellW,r*cellH,cellW,cellH);
       }
     }
   }
 
   // meta
-  ctx.fillStyle="rgba(255,255,255,0.35)";
+  ctx.fillStyle="rgba(255,255,255,0.40)";
   ctx.fillRect(goalCell.c*cellW,goalCell.r*cellH,cellW,cellH);
   ctx.fillStyle="rgba(255,255,255,0.95)";
-  ctx.font = ${Math.floor(Math.min(cellW,cellH)*0.6)}px sans-serif;
-  ctx.textAlign="center"; ctx.textBaseline="middle";
+  ctx.font = ${Math.floor(Math.min(cellW,cellH)*0.62)}px sans-serif;
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
   const g = cellCenter(goalCell.r,goalCell.c);
-  ctx.fillText("🏁", g.x, g.y+1);
+  ctx.fillText("🏁", g.x, g.y);
 
   // inicio
   const s = cellCenter(startCell.r,startCell.c);
   ctx.fillStyle="rgba(255,255,255,0.55)";
-  ctx.fillText("⛳", s.x, s.y+1);
+  ctx.fillText("⛳", s.x, s.y);
 
-  // 🐭 jugador
-  ctx.font = ${Math.floor(Math.min(cellW,cellH)*0.78)}px sans-serif;
-  ctx.fillStyle="rgba(255,255,255,0.95)";
+  // 🐭 jugador (centrado)
+  ctx.font = ${Math.floor(Math.min(cellW,cellH)*0.82)}px sans-serif;
+  ctx.fillStyle="rgba(255,255,255,0.98)";
   ctx.shadowColor="rgba(255,255,255,0.25)";
   ctx.shadowBlur=14;
-  ctx.fillText("🐭", player.x, player.y+1);
+  ctx.fillText("🐭", player.x, player.y);
   ctx.shadowBlur=0;
 }
 
@@ -311,7 +316,8 @@ board.addEventListener("pointermove",(ev)=>{
     return;
   }
 
-  player.x=p.x; player.y=p.y;
+  player.x = p.x;
+  player.y = p.y;
   draw();
 
   if(reachedGoal(player.x,player.y)){
@@ -322,12 +328,12 @@ board.addEventListener("pointermove",(ev)=>{
     setTimeout(()=>{
       game.classList.add("hide");
       wrap.classList.add("show");
-    }, 700);
+    }, 650);
   }
 });
 
 window.addEventListener("resize", resizeCanvas);
-setTimeout(resizeCanvas, 60);
+setTimeout(resizeCanvas, 80);
 
 /* Abrir + corazones + foto */
 const abrirBtn = document.getElementById("abrirBtn");
@@ -344,14 +350,10 @@ abrirBtn.addEventListener("click", async ()=>{
   }
 
   setTimeout(()=> modal.classList.add("open"), 200);
-
-  // ✅ igual que sorpresa1: sale después de abrir la foto
   setTimeout(()=> continuarBox.classList.add("show"), 2600);
 });
 
 modal.addEventListener("click", ()=> modal.classList.remove("open"));
-
-/* ❌ quitado fullscreen */
 </script>
 
 </body>
