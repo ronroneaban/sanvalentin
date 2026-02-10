@@ -31,19 +31,141 @@ body{
   align-items:center;
   justify-content:center;
   padding:22px;
+  position:relative;
 }
 
-/* Caja */
-.caja{
-  width:100%;
-  max-width:520px;
-  padding:28px;
+/* ======== PANTALLA JUEGO ======== */
+.game{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  background:var(--bg);
+  transition: opacity 350ms ease;
+}
+
+.game.hide{
+  opacity:0;
+  pointer-events:none;
+}
+
+.game-box{
+  width:min(520px, 92%);
+  padding:26px;
   border-radius:26px;
   background:var(--glass);
   backdrop-filter: blur(14px);
   border:1px solid var(--border);
   box-shadow:0 0 40px rgba(255,255,255,0.18);
   text-align:center;
+}
+
+.game-title{
+  font-family:"Agrandir";
+  font-size:26px;
+  margin:0 0 10px;
+}
+
+.game-sub{
+  margin:0 0 18px;
+  font-size:16px;
+  opacity:0.9;
+}
+
+/* tablero */
+.board{
+  position:relative;
+  width:100%;
+  height:260px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.18);
+  overflow:hidden;
+}
+
+/* decoraciones suaves para que no sea vacío */
+.bubble{
+  position:absolute;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  filter: blur(0.2px);
+  animation: float 5s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{ transform: translateY(0); opacity:0.55; }
+  50%{ transform: translateY(-10px); opacity:0.9; }
+}
+
+/* ratón escondido (casi invisible) */
+.mouse{
+  position:absolute;
+  width:46px;
+  height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  cursor:pointer;
+  user-select:none;
+
+  /* al inicio “camuflado”: */
+  opacity:0.10;
+  transform: scale(0.92);
+  transition: opacity 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+}
+
+.mouse:active{
+  transform: scale(0.88);
+}
+
+/* si pasa el dedo cerca o fallan, lo hacemos más visible (clase JS) */
+.mouse.hint{
+  opacity:0.35;
+}
+
+/* cuando lo encuentra */
+.mouse.found{
+  opacity:1;
+  transform: scale(1.06);
+  box-shadow: 0 0 26px rgba(255,255,255,0.35);
+}
+
+/* mensajito pequeño */
+.game-msg{
+  margin-top:14px;
+  font-size:15px;
+  opacity:0.9;
+  min-height:22px;
+}
+
+/* ======== CONTENIDO REGALO (lo de Abrir) ======== */
+.wrap{
+  width:100%;
+  max-width:520px;
+  text-align:center;
+  opacity:0;
+  transform: translateY(6px);
+  pointer-events:none;
+  transition: opacity 450ms ease, transform 450ms ease;
+}
+
+.wrap.show{
+  opacity:1;
+  transform: translateY(0);
+  pointer-events:auto;
+}
+
+/* Caja */
+.caja{
+  width:100%;
+  padding:28px;
+  border-radius:26px;
+  background:var(--glass);
+  backdrop-filter: blur(14px);
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(255,255,255,0.18);
 }
 
 /* Botón */
@@ -66,7 +188,8 @@ body{
   margin-top:20px;
   font-size:22px;
   letter-spacing:6px;
-  opacity:0.65;
+  opacity:0.75;
+  user-select:none;
 }
 
 /* Modal fondo */
@@ -84,7 +207,6 @@ body{
   pointer-events:none;
   transition: opacity 260ms ease;
 }
-
 .modal.open{
   opacity:1;
   pointer-events:auto;
@@ -101,7 +223,6 @@ body{
   opacity:0;
   transition: transform 520ms ease, opacity 520ms ease;
 }
-
 .modal.open .foto{
   transform: translateY(0);
   opacity:1;
@@ -111,58 +232,123 @@ body{
 
 <body>
 
-<div class="caja">
-  <button class="btn" id="abrirBtn">Abrir</button>
-  <div class="hearts" id="hearts">🤍 🤍 🤍 🤍 🤍</div>
+<!-- ===== PANTALLA 1: JUEGO RATÓN ===== -->
+<div class="game" id="game">
+  <div class="game-box">
+    <h2 class="game-title">Encuentra al 🐭</h2>
+    <p class="game-sub">Está escondido… toca donde creas 😉</p>
+
+    <div class="board" id="board">
+      <!-- burbujas decorativas -->
+      <div class="bubble" style="width:90px;height:90px;left:18px;top:30px;animation-delay:0s;"></div>
+      <div class="bubble" style="width:60px;height:60px;left:210px;top:140px;animation-delay:1s;"></div>
+      <div class="bubble" style="width:110px;height:110px;left:320px;top:40px;animation-delay:0.5s;"></div>
+      <div class="bubble" style="width:75px;height:75px;left:120px;top:180px;animation-delay:1.3s;"></div>
+
+      <div class="mouse" id="mouse" title="🐭">🐭</div>
+    </div>
+
+    <div class="game-msg" id="gameMsg"></div>
+  </div>
+</div>
+
+<!-- ===== CONTENIDO REGALO (sale al desbloquear) ===== -->
+<div class="wrap" id="wrap">
+  <div class="caja">
+    <button class="btn" id="abrirBtn">Abrir</button>
+    <div class="hearts" id="hearts">🤍 🤍 🤍 🤍 🤍</div>
+  </div>
 </div>
 
 <div class="modal" id="modal">
+  <!-- ✅ CAMBIA ESTO SI TU FOTO NO ES img1.jpg -->
   <img class="foto" id="foto" src="img1.jpg" alt="Foto" />
 </div>
 
 <script>
+/* ===== utils ===== */
+function vibrar(ms){
+  try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
+}
+
+/* ===== Juego del ratón ===== */
+const board = document.getElementById("board");
+const mouse = document.getElementById("mouse");
+const game = document.getElementById("game");
+const gameMsg = document.getElementById("gameMsg");
+const wrap = document.getElementById("wrap");
+
+function placeMouseRandom(){
+  const rect = board.getBoundingClientRect();
+  // un poquito de padding para que no quede pegado
+  const pad = 18;
+  const maxX = rect.width - 46 - pad;
+  const maxY = rect.height - 46 - pad;
+
+  const x = pad + Math.random()*maxX;
+  const y = pad + Math.random()*maxY;
+
+  mouse.style.left = x + "px";
+  mouse.style.top  = y + "px";
+}
+
+placeMouseRandom();
+
+// Si toca mal, damos un mini “hint” (más visible) un momento
+board.addEventListener("click", (e)=>{
+  // Si tocó el ratón, lo gestiona su propio handler
+  if(e.target === mouse) return;
+
+  vibrar(12);
+  gameMsg.textContent = "Nope 😼";
+  mouse.classList.add("hint");
+  setTimeout(()=> mouse.classList.remove("hint"), 600);
+  setTimeout(()=> gameMsg.textContent = "", 700);
+});
+
+mouse.addEventListener("click", ()=>{
+  vibrar(20);
+  mouse.classList.add("found");
+  gameMsg.textContent = "¡Aaaaahí estabas! 😍";
+
+  // Desbloqueo
+  setTimeout(()=>{
+    game.classList.add("hide");
+    wrap.classList.add("show");
+  }, 900);
+});
+
+/* ===== Abrir + corazones + foto ===== */
 const abrirBtn = document.getElementById("abrirBtn");
 const modal = document.getElementById("modal");
 const hearts = document.getElementById("hearts");
 const foto = document.getElementById("foto");
 
-/* Vibración */
-function vibrar(ms){
-  try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
-}
-
-/* Abrir */
-abrirBtn.addEventListener("click", async () => {
+abrirBtn.addEventListener("click", async ()=>{
   vibrar(18);
 
   const total = 5;
   let salida = "";
-
   for(let i=0;i<total;i++){
     salida += "🤍 ";
     hearts.innerHTML = salida.trim();
-    await new Promise(r=>setTimeout(r,320));
+    await new Promise(r=>setTimeout(r,320)); // velocidad
   }
 
   setTimeout(()=> modal.classList.add("open"), 200);
 });
 
-/* Cerrar tocando fondo */
+// cerrar tocando el fondo
 modal.addEventListener("click", ()=>{
   modal.classList.remove("open");
 });
 
-/* 👉 PANTALLA COMPLETA + ZOOM */
+// fullscreen + zoom (pinch-to-zoom suele funcionar en fullscreen)
 foto.addEventListener("click", (e)=>{
   e.stopPropagation();
-
-  if (foto.requestFullscreen) {
-    foto.requestFullscreen();
-  } else if (foto.webkitRequestFullscreen) {
-    foto.webkitRequestFullscreen();
-  } else if (foto.msRequestFullscreen) {
-    foto.msRequestFullscreen();
-  }
+  if (foto.requestFullscreen) foto.requestFullscreen();
+  else if (foto.webkitRequestFullscreen) foto.webkitRequestFullscreen();
+  else if (foto.msRequestFullscreen) foto.msRequestFullscreen();
 });
 </script>
 
