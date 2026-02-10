@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>❤️</title>
 
 <style>
-@font-face{ font-family:"Agrandir"; src:url("Agrandir-GrandHeavy.otf") format("opentype"); }
-@font-face{ font-family:"Garet"; src:url("Spacetype - Garet Book.otf") format("opentype"); }
+@font-face{ font-family:"Agrandir"; src:url("Agrandir-GrandHeavy.otf"); }
+@font-face{ font-family:"Garet"; src:url("Spacetype - Garet Book.otf"); }
 
 :root{
   --bg:#d6283f;
@@ -15,63 +15,25 @@
   --border: rgba(255,255,255,0.22);
 }
 
-*{ box-sizing:border-box; }
-
 html,body{
-  height:100%;
   margin:0;
+  height:100%;
   overflow:hidden;
   background:var(--bg);
+  font-family:"Garet";
   color:white;
-  font-family:"Garet", Arial;
 }
 
 body{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:22px;
-  position:relative;
 }
 
-/* ===== “PARA CONTINUAR” (sale debajo de la foto) ===== */
-.caja-continuar{
-  position:fixed;
-  left:50%;
-  transform:translateX(-50%);
-  bottom: calc(22px + env(safe-area-inset-bottom));
-  width:92%;
+/* Caja */
+.caja{
+  width:90%;
   max-width:520px;
-  padding:14px 22px;
-  border-radius:40px;
-  background:var(--glass);
-  backdrop-filter: blur(12px);
-  border:1px solid var(--border);
-  box-shadow:0 0 35px rgba(255,255,255,0.18);
-  text-align:center;
-  font-size:clamp(14px, 3.8vw, 16px);
-  opacity:0;
-  transition:0.8s;
-  z-index:35;
-  pointer-events:none;
-}
-.caja-continuar.show{ opacity:1; }
-
-/* ===== Juego ===== */
-.game{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:50;
-  background:var(--bg);
-  transition: opacity 350ms ease;
-}
-.game.hide{ opacity:0; pointer-events:none; }
-
-.game-box{
-  width:min(540px, 92%);
   padding:26px;
   border-radius:26px;
   background:var(--glass);
@@ -80,280 +42,173 @@ body{
   box-shadow:0 0 40px rgba(255,255,255,0.18);
   text-align:center;
 }
-.game-title{
+
+.titulo{
   font-family:"Agrandir";
-  font-size:26px;
-  margin:0 0 16px;
+  font-size:28px;
+  margin-bottom:20px;
 }
-.board{
-  position:relative;
-  width:100%;
-  height:320px;
-  border-radius:22px;
-  background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.18);
-  overflow:hidden;
-  touch-action:none;
-}
-canvas{ width:100%; height:100%; display:block; }
-.game-msg{ margin-top:14px; font-size:15px; opacity:0.92; min-height:22px; }
 
-/* ===== Contenido ===== */
-.wrap{
+/* Canvas laberinto */
+canvas{
   width:100%;
-  max-width:520px;
-  text-align:center;
-  opacity:0;
-  transform: translateY(6px);
-  pointer-events:none;
-  transition: opacity 450ms ease, transform 450ms ease;
+  max-width:420px;
+  height:auto;
+  background:rgba(255,255,255,0.1);
+  border-radius:18px;
 }
-.wrap.show{ opacity:1; transform: translateY(0); pointer-events:auto; }
 
-.caja{
-  width:100%;
-  padding:28px;
-  border-radius:26px;
-  background:var(--glass);
-  backdrop-filter: blur(14px);
-  border:1px solid var(--border);
-  box-shadow:0 0 40px rgba(255,255,255,0.18);
-}
-.btn{
-  width:min(320px, 88%);
-  border:none;
-  border-radius:22px;
-  padding:16px 20px;
-  background:rgba(255,255,255,0.18);
-  border:1px solid rgba(255,255,255,0.26);
-  color:white;
-  font-family:"Agrandir";
-  font-size:20px;
-  box-shadow:0 0 18px rgba(255,255,255,0.18),0 18px 50px rgba(0,0,0,0.20);
-  cursor:pointer;
-}
-.hearts{ margin-top:20px; font-size:22px; letter-spacing:6px; opacity:0.80; user-select:none; }
-
+/* Modal foto */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.55);
-  backdrop-filter: blur(8px);
+  background:rgba(0,0,0,0.6);
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:18px;
-  z-index:30;
   opacity:0;
   pointer-events:none;
-  transition: opacity 260ms ease;
+  transition:.4s;
 }
-.modal.open{ opacity:1; pointer-events:auto; }
 
-.foto{
-  max-width:92vw;
-  max-height:86vh;
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,0.18);
-  box-shadow: 0 18px 60px rgba(0,0,0,0.55);
-  transform: translateY(80px);
-  opacity:0;
-  transition: transform 520ms ease, opacity 520ms ease;
+.modal.open{
+  opacity:1;
+  pointer-events:auto;
 }
-.modal.open .foto{ transform: translateY(0); opacity:1; }
+
+.modal img{
+  max-width:90vw;
+  max-height:85vh;
+  border-radius:20px;
+}
+
+/* Para continuar */
+.continuar{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--glass);
+  backdrop-filter: blur(10px);
+  border:1px solid var(--border);
+  border-radius:40px;
+  padding:14px 24px;
+  opacity:0;
+  transition:.6s;
+}
+
+.continuar.show{ opacity:1; }
 </style>
 </head>
 
 <body>
 
-<div class="game" id="game">
-  <div class="game-box">
-    <h2 class="game-title">Laberinto</h2>
-    <div class="board" id="board"><canvas id="maze"></canvas></div>
-    <div class="game-msg" id="gameMsg"></div>
-  </div>
-</div>
-
-<div class="wrap" id="wrap">
-  <div class="caja">
-    <button class="btn" id="abrirBtn">Abrir</button>
-    <div class="hearts" id="hearts">🤍 🤍 🤍 🤍 🤍</div>
-  </div>
+<div class="caja">
+  <div class="titulo">Laberinto</div>
+  <canvas id="maze" width="400" height="400"></canvas>
 </div>
 
 <div class="modal" id="modal">
-  <img class="foto" id="foto" src="img2.jpg" alt="Foto" />
+  <img src="foto2.jpg">
 </div>
 
-<div class="caja-continuar" id="continuarBox">
-  ❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 3
+<div class="continuar" id="continuar">
+🔥 Para continuar con la sorpresa, abre la CAJA 3
 </div>
 
 <script>
-function vibrar(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
-
-const game = document.getElementById("game");
-const wrap = document.getElementById("wrap");
-const gameMsg = document.getElementById("gameMsg");
-const continuarBox = document.getElementById("continuarBox");
-
-const board = document.getElementById("board");
 const canvas = document.getElementById("maze");
 const ctx = canvas.getContext("2d");
 
-const grid = [
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
-  [1,0,1,0,1,0,1,1,1,0,1,0,1,0,1],
-  [1,0,1,0,0,0,1,0,1,0,0,0,1,0,1],
-  [1,0,1,1,1,0,1,0,1,1,1,0,1,0,1],
-  [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
-  [1,1,1,0,1,1,1,1,1,0,1,1,1,0,1],
-  [1,0,0,0,0,0,1,0,0,0,0,0,1,0,1],
-  [1,0,1,1,1,0,1,0,1,1,1,0,1,0,1],
-  [1,0,0,0,1,0,0,0,1,0,0,0,0,0,1],
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+const size = 20;
+const player = {x:1,y:1};
+
+const maze = [
+[1,1,1,1,1,1,1,1,1,1],
+[1,0,0,0,1,0,0,0,0,1],
+[1,0,1,0,1,0,1,1,0,1],
+[1,0,1,0,0,0,0,1,0,1],
+[1,0,1,1,1,1,0,1,0,1],
+[1,0,0,0,0,1,0,0,0,1],
+[1,1,1,1,0,1,1,1,0,1],
+[1,0,0,1,0,0,0,1,0,1],
+[1,0,0,0,0,1,0,0,0,1],
+[1,1,1,1,1,1,1,1,1,1]
 ];
-const rows = grid.length, cols = grid[0].length;
-const startCell = { r:1, c:1 }, goalCell = { r:9, c:13 };
 
-let cellW=0, cellH=0;
-let player = { x:0, y:0 };
-let dragging=false;
-
-function resizeCanvas(){
-  const rect = board.getBoundingClientRect();
-  canvas.width = Math.floor(rect.width * devicePixelRatio);
-  canvas.height = Math.floor(rect.height * devicePixelRatio);
-  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-
-  cellW = rect.width/cols;
-  cellH = rect.height/rows;
-
-  resetPlayer();
-  draw();
-}
-
-function cellCenter(r,c){ return { x:(c+0.5)*cellW, y:(r+0.5)*cellH }; }
-
-function resetPlayer(){
-  const p = cellCenter(startCell.r,startCell.c);
-  player.x = p.x;
-  player.y = p.y;
-  gameMsg.textContent = "";
-}
-
-function inWall(x,y){
-  const c = Math.floor(x/cellW), r = Math.floor(y/cellH);
-  if(r<0||r>=rows||c<0||c>=cols) return true;
-  return grid[r][c]===1;
-}
-
-function reachedGoal(x,y){
-  const c = Math.floor(x/cellW), r = Math.floor(y/cellH);
-  return r===goalCell.r && c===goalCell.c;
-}
+const goal = {x:8,y:8};
 
 function draw(){
-  const rect = board.getBoundingClientRect();
-  ctx.clearRect(0,0,rect.width,rect.height);
+  ctx.clearRect(0,0,400,400);
 
-  // paredes (más visibles)
-  for(let r=0;r<rows;r++){
-    for(let c=0;c<cols;c++){
-      if(grid[r][c]===1){
-        ctx.fillStyle="rgba(255,255,255,0.28)";
-        ctx.fillRect(c*cellW,r*cellH,cellW,cellH);
+  for(let y=0;y<maze.length;y++){
+    for(let x=0;x<maze[y].length;x++){
+      if(maze[y][x]===1){
+        ctx.fillStyle="rgba(255,255,255,0.5)";
+        ctx.fillRect(x*size,y*size,size,size);
       }
     }
   }
 
-  // meta
-  ctx.fillStyle="rgba(255,255,255,0.40)";
-  ctx.fillRect(goalCell.c*cellW,goalCell.r*cellH,cellW,cellH);
-  ctx.fillStyle="rgba(255,255,255,0.95)";
-  ctx.font = ${Math.floor(Math.min(cellW,cellH)*0.62)}px sans-serif;
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  const g = cellCenter(goalCell.r,goalCell.c);
-  ctx.fillText("🏁", g.x, g.y);
-
-  // inicio
-  const s = cellCenter(startCell.r,startCell.c);
-  ctx.fillStyle="rgba(255,255,255,0.55)";
-  ctx.fillText("⛳", s.x, s.y);
-
-  // 🐭 jugador (centrado)
-  ctx.font = ${Math.floor(Math.min(cellW,cellH)*0.82)}px sans-serif;
-  ctx.fillStyle="rgba(255,255,255,0.98)";
-  ctx.shadowColor="rgba(255,255,255,0.25)";
-  ctx.shadowBlur=14;
-  ctx.fillText("🐭", player.x, player.y);
-  ctx.shadowBlur=0;
+  ctx.font="20px Arial";
+  ctx.fillText("🐭", player.x*size+2, player.y*size+18);
+  ctx.fillText("🧀", goal.x*size+2, goal.y*size+18);
 }
 
-function pointerPos(ev){
-  const rect = board.getBoundingClientRect();
-  return { x: ev.clientX-rect.left, y: ev.clientY-rect.top };
-}
-
-board.addEventListener("pointerdown",(ev)=>{
-  dragging=true;
-  board.setPointerCapture(ev.pointerId);
-});
-board.addEventListener("pointerup",()=> dragging=false);
-board.addEventListener("pointercancel",()=> dragging=false);
-
-board.addEventListener("pointermove",(ev)=>{
-  if(!dragging) return;
-  const p = pointerPos(ev);
-
-  if(inWall(p.x,p.y)){
-    vibrar(18);
-    gameMsg.textContent="¡Uy! 😈";
-    resetPlayer();
+function move(dx,dy){
+  const nx = player.x+dx;
+  const ny = player.y+dy;
+  if(maze[ny][nx]===0){
+    player.x=nx;
+    player.y=ny;
     draw();
-    return;
+
+    if(player.x===goal.x && player.y===goal.y){
+      win();
+    }
   }
+}
 
-  player.x = p.x;
-  player.y = p.y;
-  draw();
+function win(){
+  setTimeout(()=>{
+    document.getElementById("modal").classList.add("open");
+  },600);
 
-  if(reachedGoal(player.x,player.y)){
-    vibrar(25);
-    gameMsg.textContent="¡Bien! 😍";
-    dragging=false;
+  setTimeout(()=>{
+    document.getElementById("continuar").classList.add("show");
+  },3500);
+}
 
-    setTimeout(()=>{
-      game.classList.add("hide");
-      wrap.classList.add("show");
-    }, 650);
+window.addEventListener("keydown", e=>{
+  if(e.key==="ArrowUp") move(0,-1);
+  if(e.key==="ArrowDown") move(0,1);
+  if(e.key==="ArrowLeft") move(-1,0);
+  if(e.key==="ArrowRight") move(1,0);
+});
+
+/* CONTROLES MÓVIL */
+let touchStartX=0;
+let touchStartY=0;
+
+canvas.addEventListener("touchstart", e=>{
+  touchStartX=e.touches[0].clientX;
+  touchStartY=e.touches[0].clientY;
+});
+
+canvas.addEventListener("touchend", e=>{
+  let dx=e.changedTouches[0].clientX-touchStartX;
+  let dy=e.changedTouches[0].clientY-touchStartY;
+
+  if(Math.abs(dx)>Math.abs(dy)){
+    if(dx>20) move(1,0);
+    if(dx<-20) move(-1,0);
+  }else{
+    if(dy>20) move(0,1);
+    if(dy<-20) move(0,-1);
   }
 });
 
-window.addEventListener("resize", resizeCanvas);
-setTimeout(resizeCanvas, 80);
-
-/* Abrir + corazones + foto */
-const abrirBtn = document.getElementById("abrirBtn");
-const modal = document.getElementById("modal");
-const hearts = document.getElementById("hearts");
-
-abrirBtn.addEventListener("click", async ()=>{
-  vibrar(18);
-  let salida="";
-  for(let i=0;i<5;i++){
-    salida+="🤍 ";
-    hearts.innerHTML = salida.trim();
-    await new Promise(r=>setTimeout(r,340));
-  }
-
-  setTimeout(()=> modal.classList.add("open"), 200);
-  setTimeout(()=> continuarBox.classList.add("show"), 2600);
-});
-
-modal.addEventListener("click", ()=> modal.classList.remove("open"));
+draw();
 </script>
 
 </body>
