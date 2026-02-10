@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+[19:18, 10/2/2026] ro: <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -34,7 +34,54 @@ body{
   position:relative;
 }
 
-/* ===== “PARA CONTINUAR” ===== */
+/* ===== POPUP estilo PIN mal ===…
+[19:20, 10/2/2026] ro: <!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>❤️</title>
+
+<style>
+@font-face{ font-family:"Agrandir"; src:url("Agrandir-GrandHeavy.otf") format("opentype"); }
+@font-face
+[19:21, 10/2/2026] ro: <!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>❤️</title>
+
+<style>
+@font-face{ font-family:"Agrandir"; src:url("Agrandir-GrandHeavy.otf") format("opentype"); }
+@font-face{ font-family:"Garet"; src:url("Spacetype - Garet Book.otf") format("opentype"); }
+
+:root{
+  --bg:#d6283f;
+  --glass: rgba(255,255,255,0.14);
+  --border: rgba(255,255,255,0.22);
+}
+
+*{ box-sizing:border-box; }
+
+html,body{
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  background:var(--bg);
+  color:white;
+  font-family:"Garet", Arial;
+}
+
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  position:relative;
+}
+
+/* ===== “PARA CONTINUAR” (sale debajo de la foto) ===== */
 .caja-continuar{
   position:fixed;
   left:50%;
@@ -52,7 +99,7 @@ body{
   font-size:clamp(14px, 3.8vw, 16px);
   opacity:0;
   transition:0.8s;
-  z-index:12;
+  z-index:35;        /* encima del modal */
   pointer-events:none;
 }
 .caja-continuar.show{ opacity:1; }
@@ -168,7 +215,7 @@ canvas{ width:100%; height:100%; display:block; }
 
 <div class="game" id="game">
   <div class="game-box">
-    <h2 class="game-title">Laberinto 🧩</h2>
+    <h2 class="game-title">Laberinto</h2>
     <div class="board" id="board"><canvas id="maze"></canvas></div>
     <div class="game-msg" id="gameMsg"></div>
   </div>
@@ -218,7 +265,7 @@ const rows = grid.length, cols = grid[0].length;
 const startCell = { r:1, c:1 }, goalCell = { r:9, c:13 };
 
 let cellW=0, cellH=0;
-let ball = { x:0, y:0, r:0 };
+let player = { x:0, y:0 }; // posición del 🐭 en px
 let dragging=false;
 
 function resizeCanvas(){
@@ -228,16 +275,18 @@ function resizeCanvas(){
   ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
   cellW = rect.width/cols;
   cellH = rect.height/rows;
-  ball.r = Math.min(cellW,cellH)*0.28;
-  resetBall();
+  resetPlayer();
   draw();
 }
+
 function cellCenter(r,c){ return { x:(c+0.5)*cellW, y:(r+0.5)*cellH }; }
-function resetBall(){
+
+function resetPlayer(){
   const p = cellCenter(startCell.r,startCell.c);
-  ball.x=p.x; ball.y=p.y;
+  player.x=p.x; player.y=p.y;
   gameMsg.textContent="";
 }
+
 function inWall(x,y){
   const c = Math.floor(x/cellW), r = Math.floor(y/cellH);
   if(r<0||r>=rows||c<0||c>=cols) return true;
@@ -247,10 +296,12 @@ function reachedGoal(x,y){
   const c = Math.floor(x/cellW), r = Math.floor(y/cellH);
   return r===goalCell.r && c===goalCell.c;
 }
+
 function draw(){
   const rect = board.getBoundingClientRect();
   ctx.clearRect(0,0,rect.width,rect.height);
 
+  // paredes
   for(let r=0;r<rows;r++){
     for(let c=0;c<cols;c++){
       if(grid[r][c]===1){
@@ -260,20 +311,26 @@ function draw(){
     }
   }
 
+  // meta
   ctx.fillStyle="rgba(255,255,255,0.35)";
   ctx.fillRect(goalCell.c*cellW,goalCell.r*cellH,cellW,cellH);
   ctx.fillStyle="rgba(255,255,255,0.95)";
-  ctx.font = `${Math.floor(Math.min(cellW,cellH)*0.6)}px sans-serif`;
+  ctx.font = ${Math.floor(Math.min(cellW,cellH)*0.6)}px sans-serif;
   ctx.textAlign="center"; ctx.textBaseline="middle";
   const g = cellCenter(goalCell.r,goalCell.c);
   ctx.fillText("🏁", g.x, g.y+1);
 
-  ctx.beginPath();
+  // inicio
+  const s = cellCenter(startCell.r,startCell.c);
+  ctx.fillStyle="rgba(255,255,255,0.55)";
+  ctx.fillText("⛳", s.x, s.y+1);
+
+  // 🐭 jugador
+  ctx.font = ${Math.floor(Math.min(cellW,cellH)*0.78)}px sans-serif;
   ctx.fillStyle="rgba(255,255,255,0.95)";
-  ctx.shadowColor="rgba(255,255,255,0.35)";
+  ctx.shadowColor="rgba(255,255,255,0.25)";
   ctx.shadowBlur=14;
-  ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
-  ctx.fill();
+  ctx.fillText("🐭", player.x, player.y+1);
   ctx.shadowBlur=0;
 }
 
@@ -296,15 +353,15 @@ board.addEventListener("pointermove",(ev)=>{
   if(inWall(p.x,p.y)){
     vibrar(18);
     gameMsg.textContent="¡Uy! 😈";
-    resetBall();
+    resetPlayer();
     draw();
     return;
   }
 
-  ball.x=p.x; ball.y=p.y;
+  player.x=p.x; player.y=p.y;
   draw();
 
-  if(reachedGoal(ball.x,ball.y)){
+  if(reachedGoal(player.x,player.y)){
     vibrar(25);
     gameMsg.textContent="¡Bien! 😍";
     dragging=false;
@@ -312,19 +369,17 @@ board.addEventListener("pointermove",(ev)=>{
     setTimeout(()=>{
       game.classList.add("hide");
       wrap.classList.add("show");
-      setTimeout(()=> continuarBox.classList.add("show"), 1500);
     }, 700);
   }
 });
 
 window.addEventListener("resize", resizeCanvas);
-setTimeout(resizeCanvas, 50);
+setTimeout(resizeCanvas, 60);
 
 /* Abrir + corazones + foto */
 const abrirBtn = document.getElementById("abrirBtn");
 const modal = document.getElementById("modal");
 const hearts = document.getElementById("hearts");
-const foto = document.getElementById("foto");
 
 abrirBtn.addEventListener("click", async ()=>{
   vibrar(18);
@@ -334,17 +389,16 @@ abrirBtn.addEventListener("click", async ()=>{
     hearts.innerHTML = salida.trim();
     await new Promise(r=>setTimeout(r,340));
   }
+
   setTimeout(()=> modal.classList.add("open"), 200);
+
+  // ✅ igual que sorpresa1: sale después de abrir la foto
+  setTimeout(()=> continuarBox.classList.add("show"), 2600);
 });
 
 modal.addEventListener("click", ()=> modal.classList.remove("open"));
 
-foto.addEventListener("click", (e)=>{
-  e.stopPropagation();
-  if (foto.requestFullscreen) foto.requestFullscreen();
-  else if (foto.webkitRequestFullscreen) foto.webkitRequestFullscreen();
-  else if (foto.msRequestFullscreen) foto.msRequestFullscreen();
-});
+/* ❌ quitado fullscreen */
 </script>
 
 </body>
