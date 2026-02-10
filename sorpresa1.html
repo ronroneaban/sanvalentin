@@ -34,7 +34,240 @@ body{
   position:relative;
 }
 
-/* ===== MENSAJE FINAL (pill) ===== */
+/* ===== POPUP estilo PIN mal ===== */
+.popup{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
+  z-index:60;
+}
+.popup.show{ display:flex; }
+
+.popup-box{
+  background:rgba(255,255,255,0.92);
+  color:#111;
+  padding:26px;
+  border-radius:22px;
+  font-size:22px;
+  text-align:center;
+  width:min(380px, 86%);
+  animation:popIn 240ms ease;
+  font-family:"Garet", Arial;
+}
+.popup-mini{
+  margin-top:10px;
+  font-size:13px;
+  opacity:0.75;
+}
+
+@keyframes popIn{
+  from{opacity:0; transform:translateY(10px) scale(0.98);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+
+/* ======== PANTALLA JUEGO ======== */
+.game{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  background:var(--bg);
+  transition: opacity 350ms ease;
+}
+.game.hide{
+  opacity:0;
+  pointer-events:none;
+}
+
+.game-box{
+  width:min(560px, 92%);
+  padding:26px;
+  border-radius:26px;
+  background:var(--glass);
+  backdrop-filter: blur(14px);
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(255,255,255,0.18);
+  text-align:center;
+}
+
+.game-title{
+  font-family:"Agrandir";
+  font-size:26px;
+  margin:0 0 16px;
+}
+
+/* tablero */
+.board{
+  position:relative;
+  width:100%;
+  height:300px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.18);
+  overflow:hidden;
+}
+
+/* burbujas decorativas */
+.bubble{
+  position:absolute;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  animation: float 5s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{ transform: translateY(0); opacity:0.55; }
+  50%{ transform: translateY(-10px); opacity:0.9; }
+}
+
+/* ✅ Animales = MISMO tamaño y camuflaje que el ratón */
+.decoy{
+  position:absolute;
+  width:46px;
+  height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  user-select:none;
+
+  font-size:24px;
+  opacity:0.10;
+  filter: blur(1px);
+  transform: scale(0.92);
+}
+
+/* ratón camuflado igual */
+.mouse{
+  position:absolute;
+  width:46px;
+  height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  cursor:pointer;
+  user-select:none;
+
+  font-size:24px;
+  opacity:0.10;
+  filter: blur(1px);
+  transform: scale(0.92);
+  transition: opacity 220ms ease, transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+}
+.mouse:active{ transform: scale(0.88); }
+
+/* hint */
+.mouse.hint{ opacity:0.30; filter: blur(0.4px); }
+
+/* found */
+.mouse.found{
+  opacity:1;
+  filter: blur(0px);
+  transform: scale(1.06);
+  box-shadow: 0 0 26px rgba(255,255,255,0.35);
+}
+
+.game-msg{
+  margin-top:14px;
+  font-size:15px;
+  opacity:0.92;
+  min-height:22px;
+}
+
+/* ======== CONTENIDO REGALO ======== */
+.wrap{
+  width:100%;
+  max-width:520px;
+  text-align:center;
+  opacity:0;
+  transform: translateY(6px);
+  pointer-events:none;
+  transition: opacity 450ms ease, transform 450ms ease;
+}
+.wrap.show{
+  opacity:1;
+  transform: translateY(0);
+  pointer-events:auto;
+}
+
+/* Caja */
+.caja{
+  width:100%;
+  padding:28px;
+  border-radius:26px;
+  background:var(--glass);
+  backdrop-filter: blur(14px);
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(255,255,255,0.18);
+}
+
+/* Botón */
+.btn{
+  width:min(320px, 88%);
+  border:none;
+  border-radius:22px;
+  padding:16px 20px;
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.26);
+  color:white;
+  font-family:"Agrandir";
+  font-size:20px;
+  box-shadow:0 0 18px rgba(255,255,255,0.18),0 18px 50px rgba(0,0,0,0.20);
+  cursor:pointer;
+}
+
+/* Corazones */
+.hearts{
+  margin-top:20px;
+  font-size:22px;
+  letter-spacing:6px;
+  opacity:0.80;
+  user-select:none;
+}
+
+/* Modal */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:30;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity 260ms ease;
+}
+.modal.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* Imagen */
+.foto{
+  max-width:92vw;
+  max-height:86vh;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+  transform: translateY(80px);
+  opacity:0;
+  transition: transform 520ms ease, opacity 520ms ease;
+}
+.modal.open .foto{
+  transform: translateY(0);
+  opacity:1;
+}
+
+/* ===== “PARA CONTINUAR” (debajo de la foto) ===== */
 .caja-continuar{
   position:fixed;
   left:50%;
@@ -52,149 +285,75 @@ body{
   font-size:clamp(14px, 3.8vw, 16px);
   opacity:0;
   transition:0.8s;
-  z-index:12;
+  z-index:35; /* encima del modal */
   pointer-events:none;
 }
 .caja-continuar.show{ opacity:1; }
-
-/* ===== Juego vaho ===== */
-.game{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:50;
-  background:var(--bg);
-  transition: opacity 350ms ease;
-}
-.game.hide{ opacity:0; pointer-events:none; }
-
-.game-box{
-  width:min(540px, 92%);
-  padding:26px;
-  border-radius:26px;
-  background:var(--glass);
-  backdrop-filter: blur(14px);
-  border:1px solid var(--border);
-  box-shadow:0 0 40px rgba(255,255,255,0.18);
-  text-align:center;
-}
-.game-title{
-  font-family:"Agrandir";
-  font-size:26px;
-  margin:0 0 16px;
-}
-.board{
-  position:relative;
-  width:100%;
-  height:320px;
-  border-radius:22px;
-  background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.18);
-  overflow:hidden;
-  touch-action:none;
-}
-.secret{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:64px;
-  opacity:0.9;
-  user-select:none;
-  filter: drop-shadow(0 14px 30px rgba(0,0,0,0.25));
-}
-#fog{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  display:block;
-  border-radius:22px;
-}
-.game-msg{ margin-top:14px; font-size:15px; opacity:0.92; min-height:22px; }
-
-/* ===== Contenido ===== */
-.wrap{
-  width:100%;
-  max-width:520px;
-  text-align:center;
-  opacity:0;
-  transform: translateY(6px);
-  pointer-events:none;
-  transition: opacity 450ms ease, transform 450ms ease;
-}
-.wrap.show{ opacity:1; transform: translateY(0); pointer-events:auto; }
-
-.caja{
-  width:100%;
-  padding:28px;
-  border-radius:26px;
-  background:var(--glass);
-  backdrop-filter: blur(14px);
-  border:1px solid var(--border);
-  box-shadow:0 0 40px rgba(255,255,255,0.18);
-}
-.btn{
-  width:min(320px, 88%);
-  border:none;
-  border-radius:22px;
-  padding:16px 20px;
-  background:rgba(255,255,255,0.18);
-  border:1px solid rgba(255,255,255,0.26);
-  color:white;
-  font-family:"Agrandir";
-  font-size:20px;
-  box-shadow:0 0 18px rgba(255,255,255,0.18),0 18px 50px rgba(0,0,0,0.20);
-  cursor:pointer;
-}
-.hearts{ margin-top:20px; font-size:22px; letter-spacing:6px; opacity:0.80; user-select:none; }
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  backdrop-filter: blur(8px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  z-index:30;
-  opacity:0;
-  pointer-events:none;
-  transition: opacity 260ms ease;
-}
-.modal.open{ opacity:1; pointer-events:auto; }
-
-.foto{
-  max-width:92vw;
-  max-height:86vh;
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,0.18);
-  box-shadow: 0 18px 60px rgba(0,0,0,0.55);
-  transform: translateY(80px);
-  opacity:0;
-  transition: transform 520ms ease, opacity 520ms ease;
-}
-.modal.open .foto{ transform: translateY(0); opacity:1; }
 </style>
 </head>
 
 <body>
 
+<!-- POPUP “me escapé” -->
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <div>¡Me escapé 🐭!</div>
+    <div class="popup-mini">Toca para continuar</div>
+  </div>
+</div>
+
+<!-- JUEGO -->
 <div class="game" id="game">
   <div class="game-box">
-    <h2 class="game-title">✨</h2>
+    <h2 class="game-title">Encuentra al 🐭</h2>
+
     <div class="board" id="board">
-      <div class="secret">❤️‍🔥🐭</div>
-      <canvas id="fog"></canvas>
+      <div class="bubble" style="width:100px;height:100px;left:16px;top:26px;animation-delay:0s;"></div>
+      <div class="bubble" style="width:78px;height:78px;left:230px;top:170px;animation-delay:1s;"></div>
+      <div class="bubble" style="width:128px;height:128px;left:360px;top:40px;animation-delay:0.5s;"></div>
+      <div class="bubble" style="width:86px;height:86px;left:120px;top:200px;animation-delay:1.3s;"></div>
+
+      <!-- MUCHOS animales (todos iguales de camuflaje) -->
+      <div class="decoy" style="left:14px; top:14px;">🐶</div>
+      <div class="decoy" style="left:62px; top:44px;">🐱</div>
+      <div class="decoy" style="left:112px; top:16px;">🐰</div>
+      <div class="decoy" style="left:160px; top:58px;">🦊</div>
+      <div class="decoy" style="left:212px; top:18px;">🐻</div>
+      <div class="decoy" style="left:260px; top:58px;">🐼</div>
+      <div class="decoy" style="left:310px; top:18px;">🐨</div>
+      <div class="decoy" style="left:360px; top:58px;">🦁</div>
+      <div class="decoy" style="left:410px; top:18px;">🐯</div>
+      <div class="decoy" style="left:458px; top:58px;">🐸</div>
+
+      <div class="decoy" style="left:22px; top:108px;">🐵</div>
+      <div class="decoy" style="left:74px; top:142px;">🐮</div>
+      <div class="decoy" style="left:126px; top:110px;">🐷</div>
+      <div class="decoy" style="left:174px; top:144px;">🐙</div>
+      <div class="decoy" style="left:226px; top:112px;">🦄</div>
+      <div class="decoy" style="left:276px; top:146px;">🐢</div>
+      <div class="decoy" style="left:330px; top:112px;">🦋</div>
+      <div class="decoy" style="left:380px; top:146px;">🐝</div>
+      <div class="decoy" style="left:432px; top:112px;">🦖</div>
+
+      <div class="decoy" style="left:34px; top:210px;">🦉</div>
+      <div class="decoy" style="left:88px; top:240px;">🐔</div>
+      <div class="decoy" style="left:140px; top:212px;">🐳</div>
+      <div class="decoy" style="left:194px; top:244px;">🦝</div>
+      <div class="decoy" style="left:246px; top:212px;">🐊</div>
+      <div class="decoy" style="left:300px; top:246px;">🦩</div>
+      <div class="decoy" style="left:352px; top:214px;">🐟</div>
+      <div class="decoy" style="left:404px; top:246px;">🦜</div>
+      <div class="decoy" style="left:456px; top:214px;">🐞</div>
+
+      <!-- ratón -->
+      <div class="mouse" id="mouse">🐭</div>
     </div>
+
     <div class="game-msg" id="gameMsg"></div>
   </div>
 </div>
 
+<!-- CONTENIDO -->
 <div class="wrap" id="wrap">
   <div class="caja">
     <button class="btn" id="abrirBtn">Abrir</button>
@@ -203,95 +362,79 @@ body{
 </div>
 
 <div class="modal" id="modal">
-  <img class="foto" id="foto" src="img3.jpg" alt="Foto" />
+  <img class="foto" id="foto" src="img1.jpg" alt="Foto" />
 </div>
 
+<!-- pill continuar (sale DESPUÉS de abrir foto) -->
 <div class="caja-continuar" id="continuarBox">
-  ❤️‍🔥 Espero que te haya encantado, te amo.
+  ❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 2
 </div>
 
 <script>
 function vibrar(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
 
+const board = document.getElementById("board");
+const mouse = document.getElementById("mouse");
 const game = document.getElementById("game");
+const gameMsg = document.getElementById("gameMsg");
 const wrap = document.getElementById("wrap");
-const msg  = document.getElementById("gameMsg");
+
+const popup = document.getElementById("popup");
 const continuarBox = document.getElementById("continuarBox");
 
-const board = document.getElementById("board");
-const fog = document.getElementById("fog");
-const ctx = fog.getContext("2d", { willReadFrequently:true });
+let firstEscape = true;
 
-let drawing=false, cleared=0, unlocked=false;
+function placeMouseRandom(){
+  const rect = board.getBoundingClientRect();
+  const pad = 12, size = 46;
+  const maxX = rect.width - size - pad;
+  const maxY = rect.height - size - pad;
+  mouse.style.left = (pad + Math.random()*maxX) + "px";
+  mouse.style.top  = (pad + Math.random()*maxY) + "px";
+}
+placeMouseRandom();
 
-function resizeFog(){
-  const rect = board.getBoundingClientRect();
-  fog.width = Math.floor(rect.width * devicePixelRatio);
-  fog.height = Math.floor(rect.height * devicePixelRatio);
-  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-  paintFog();
-  cleared=0; unlocked=false;
-  msg.textContent="";
-}
-function paintFog(){
-  const rect = board.getBoundingClientRect();
-  ctx.globalCompositeOperation="source-over";
-  ctx.fillStyle="rgba(255,255,255,0.65)";
-  ctx.fillRect(0,0,rect.width,rect.height);
+/* si toca mal */
+board.addEventListener("click", (e)=>{
+  if(e.target === mouse) return;
+  vibrar(12);
+  gameMsg.textContent = "Nope 😼";
+  mouse.classList.add("hint");
+  setTimeout(()=> mouse.classList.remove("hint"), 600);
+  setTimeout(()=> gameMsg.textContent = "", 700);
+});
 
-  const g = ctx.createRadialGradient(rect.width*0.5, rect.height*0.35, 30, rect.width*0.5, rect.height*0.35, rect.width*0.8);
-  g.addColorStop(0, "rgba(255,255,255,0.18)");
-  g.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle=g;
-  ctx.fillRect(0,0,rect.width,rect.height);
-}
-function pos(ev){
-  const rect = board.getBoundingClientRect();
-  return { x: ev.clientX-rect.left, y: ev.clientY-rect.top };
-}
-function eraseAt(x,y){
-  const r=26;
-  ctx.globalCompositeOperation="destination-out";
-  ctx.beginPath();
-  ctx.arc(x,y,r,0,Math.PI*2);
-  ctx.fill();
-  ctx.globalCompositeOperation="source-over";
-}
-function checkUnlock(){
-  if(unlocked) return;
-  if(cleared>=36){
-    unlocked=true;
-    vibrar(25);
-    msg.textContent="😍";
-    setTimeout(()=>{
-      game.classList.add("hide");
-      wrap.classList.add("show");
-      setTimeout(()=> continuarBox.classList.add("show"), 1500);
-    }, 650);
+/* si toca el ratón */
+mouse.addEventListener("click", (e)=>{
+  e.stopPropagation();
+
+  if(firstEscape){
+    firstEscape = false;
+    vibrar(20);
+
+    // popup “me escapé”
+    popup.classList.add("show");
+
+    // recoloca el ratón para que tenga que buscar otra vez
+    placeMouseRandom();
+    return;
   }
-}
 
-board.addEventListener("pointerdown",(ev)=>{
-  drawing=true;
-  board.setPointerCapture(ev.pointerId);
-  const p=pos(ev);
-  eraseAt(p.x,p.y);
-  cleared++;
-  checkUnlock();
-});
-board.addEventListener("pointermove",(ev)=>{
-  if(!drawing) return;
-  const p=pos(ev);
-  eraseAt(p.x,p.y);
-  cleared++;
-  if(cleared%10===0) vibrar(8);
-  checkUnlock();
-});
-board.addEventListener("pointerup",()=> drawing=false);
-board.addEventListener("pointercancel",()=> drawing=false);
+  // ahora sí lo caza
+  vibrar(22);
+  mouse.classList.add("found");
+  gameMsg.textContent = "CA - ZA - DO 🐭";
 
-window.addEventListener("resize", resizeFog);
-setTimeout(resizeFog, 60);
+  setTimeout(()=>{
+    game.classList.add("hide");
+    wrap.classList.add("show");
+  }, 900);
+});
+
+/* cerrar popup tocando */
+popup.addEventListener("click", ()=>{
+  popup.classList.remove("show");
+});
 
 /* Abrir + corazones + foto */
 const abrirBtn = document.getElementById("abrirBtn");
@@ -301,23 +444,25 @@ const foto = document.getElementById("foto");
 
 abrirBtn.addEventListener("click", async ()=>{
   vibrar(18);
-  let salida="";
+
+  let salida = "";
   for(let i=0;i<5;i++){
-    salida+="🤍 ";
+    salida += "🤍 ";
     hearts.innerHTML = salida.trim();
     await new Promise(r=>setTimeout(r,340));
   }
+
+  // abre foto
   setTimeout(()=> modal.classList.add("open"), 200);
+
+  // ✅ “Para continuar…” sale unos segundos después, debajo de la foto
+  setTimeout(()=> continuarBox.classList.add("show"), 2600);
 });
 
+/* cerrar modal tocando fondo */
 modal.addEventListener("click", ()=> modal.classList.remove("open"));
 
-foto.addEventListener("click", (e)=>{
-  e.stopPropagation();
-  if (foto.requestFullscreen) foto.requestFullscreen();
-  else if (foto.webkitRequestFullscreen) foto.webkitRequestFullscreen();
-  else if (foto.msRequestFullscreen) foto.msRequestFullscreen();
-});
+/* ❌ quitado fullscreen al tocar la imagen */
 </script>
 
 </body>
