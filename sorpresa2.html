@@ -1,169 +1,426 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sorpresa 2</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>❤️</title>
 
 <style>
-@font-face { font-family:'AgrandirHeavy'; src:url('./Agrandir-GrandHeavy.otf') format('opentype'); }
-@font-face { font-family:'GaretBook'; src:url('./Spacetype - Garet Book.otf') format('opentype'); }
+@font-face{ font-family:"Agrandir"; src:url("Agrandir-GrandHeavy.otf") format("opentype"); }
+@font-face{ font-family:"Garet"; src:url("Spacetype - Garet Book.otf") format("opentype"); }
 
 :root{
-  --rojo:#d6283f;
-  --glass: rgba(255,255,255,0.16);
-  --borde: rgba(255,255,255,0.25);
-  --sombra: 0 18px 60px rgba(0,0,0,0.35);
+  --bg:#d6283f;
+  --glass: rgba(255,255,255,0.14);
+  --border: rgba(255,255,255,0.22);
 }
 
-*{box-sizing:border-box;}
+*{ box-sizing:border-box; }
+
+html,body{
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  background:var(--bg);
+  color:white;
+  font-family:"Garet", Arial;
+}
 
 body{
-  margin:0;
-  font-family:'GaretBook', sans-serif;
-  background:var(--rojo);
-  color:white;
-
-  height:100vh;
-  overflow:hidden;
-
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:20px;
-
+  padding:22px;
   position:relative;
 }
 
-@keyframes entrar {
-  from { opacity:0; transform: translateY(14px); }
-  to   { opacity:1; transform: translateY(0); }
+/* ======== PANTALLA JUEGO ======== */
+.game{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  background:var(--bg);
+  transition: opacity 350ms ease;
+}
+.game.hide{
+  opacity:0;
+  pointer-events:none;
 }
 
-.caja{
-  width:100%;
-  max-width:720px;
+.game-box{
+  width:min(540px, 92%);
+  padding:26px;
+  border-radius:26px;
   background:var(--glass);
-  border:1px solid var(--borde);
-  padding:24px;
-  border-radius:20px;
+  backdrop-filter: blur(14px);
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(255,255,255,0.18);
   text-align:center;
-  box-shadow:var(--sombra);
-  animation: entrar 500ms ease-out both;
 }
 
-h1{
-  font-family:'AgrandirHeavy', sans-serif;
-  margin:0 0 14px;
-  font-size: clamp(28px, 6vw, 40px);
+.game-title{
+  font-family:"Agrandir";
+  font-size:26px;
+  margin:0 0 16px;
 }
 
-.btn{
-  font-family:'AgrandirHeavy', sans-serif;
-  padding:14px 18px;
-  font-size:22px;
-  border:none;
-  border-radius:16px;
-  cursor:pointer;
-  color:#ffffff;
-  background: rgba(255,255,255,0.22);
-  border: 1px solid rgba(255,255,255,0.25);
-  box-shadow: 0 14px 35px rgba(0,0,0,0.18);
+.board{
   position:relative;
+  width:100%;
+  height:320px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.18);
   overflow:hidden;
-  transform: translateZ(0);
+  touch-action:none; /* ✅ importante para arrastrar en móvil sin scroll */
 }
 
-.btn:active{ transform: scale(0.98); }
-
-.btn::after{
-  content:'';
-  position:absolute;
-  top:-40%;
-  left:-60%;
-  width:60%;
-  height:200%;
-  background: rgba(255,255,255,0.25);
-  transform: rotate(20deg);
-  transition: left 350ms ease;
+canvas{
+  width:100%;
+  height:100%;
+  display:block;
 }
-.btn:hover::after{ left:120%; }
 
-.hint{ margin-top:12px; opacity:0.9; }
+/* mensaje */
+.game-msg{
+  margin-top:14px;
+  font-size:15px;
+  opacity:0.92;
+  min-height:22px;
+}
 
-img{
+/* ======== CONTENIDO REGALO (Abrir) ======== */
+.wrap{
   width:100%;
   max-width:520px;
-  margin-top:18px;
-  border-radius:16px;
-  display:none;
-  cursor:pointer;
-  border:1px solid rgba(255,255,255,0.25);
-  box-shadow: 0 18px 60px rgba(0,0,0,0.25);
+  text-align:center;
   opacity:0;
-  transform: translateY(8px);
+  transform: translateY(6px);
+  pointer-events:none;
+  transition: opacity 450ms ease, transform 450ms ease;
+}
+.wrap.show{
+  opacity:1;
+  transform: translateY(0);
+  pointer-events:auto;
 }
 
-@keyframes aparecerFoto{
-  to { opacity:1; transform: translateY(0); }
+/* Caja */
+.caja{
+  width:100%;
+  padding:28px;
+  border-radius:26px;
+  background:var(--glass);
+  backdrop-filter: blur(14px);
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(255,255,255,0.18);
 }
 
-/* Corazones */
-.hearts{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-.heart{
-  position:absolute;
-  bottom:-60px;
-  font-size:18px;
-  opacity:0.85;
-  animation: floatUp linear infinite;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,.20));
+/* Botón */
+.btn{
+  width:min(320px, 88%);
+  border:none;
+  border-radius:22px;
+  padding:16px 20px;
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.26);
+  color:white;
+  font-family:"Agrandir";
+  font-size:20px;
+  box-shadow:0 0 18px rgba(255,255,255,0.18),0 18px 50px rgba(0,0,0,0.20);
+  cursor:pointer;
 }
-@keyframes floatUp{
-  from { transform: translateY(0) translateX(0) scale(1); opacity:0.0; }
-  10%  { opacity:0.9; }
-  to   { transform: translateY(-120vh) translateX(30px) scale(1.15); opacity:0.0; }
+
+/* Corazones blancos */
+.hearts{
+  margin-top:20px;
+  font-size:22px;
+  letter-spacing:6px;
+  opacity:0.80;
+  user-select:none;
+}
+
+/* Modal */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:30;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity 260ms ease;
+}
+.modal.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* Imagen */
+.foto{
+  max-width:92vw;
+  max-height:86vh;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+  transform: translateY(80px);
+  opacity:0;
+  transition: transform 520ms ease, opacity 520ms ease;
+}
+.modal.open .foto{
+  transform: translateY(0);
+  opacity:1;
 }
 </style>
 </head>
 
 <body>
-<div class="hearts" aria-hidden="true">
-  <div class="heart" style="left:14%; animation-duration: 12s; animation-delay: 0s;">💗</div>
-  <div class="heart" style="left:30%; animation-duration: 10.8s; animation-delay: 1s;">💘</div>
-  <div class="heart" style="left:46%; animation-duration: 13s; animation-delay: 2s;">❤️</div>
-  <div class="heart" style="left:62%; animation-duration: 11.2s; animation-delay: 0.6s;">💓</div>
-  <div class="heart" style="left:78%; animation-duration: 12.5s; animation-delay: 1.3s;">💖</div>
+
+<!-- ===== PANTALLA 1: LABERINTO ===== -->
+<div class="game" id="game">
+  <div class="game-box">
+    <h2 class="game-title">Laberinto 🧩</h2>
+
+    <div class="board" id="board">
+      <canvas id="maze"></canvas>
+    </div>
+
+    <div class="game-msg" id="gameMsg"></div>
+  </div>
 </div>
 
-<div class="caja">
-  <h1>Sorpresa 2 ❤️</h1>
+<!-- ===== CONTENIDO REGALO ===== -->
+<div class="wrap" id="wrap">
+  <div class="caja">
+    <button class="btn" id="abrirBtn">Abrir</button>
+    <div class="hearts" id="hearts">🤍 🤍 🤍 🤍 🤍</div>
+  </div>
+</div>
 
-  <button class="btn" onclick="mostrar()">SORPRESA 2</button>
-  <div class="hint">Toca el botón… y luego toca la foto para verla en pantalla completa 😄</div>
-
-  <img id="foto" src="./img2.jpg" alt="Sorpresa 2" onclick="pantallaCompleta(this)">
+<div class="modal" id="modal">
+  <!-- ✅ IMAGEN DE SORPRESA 2 -->
+  <img class="foto" id="foto" src="img2.jpg" alt="Foto" />
 </div>
 
 <script>
 function vibrar(ms){
-  try{
-    if (navigator.vibrate) navigator.vibrate(ms);
-  } catch(e){}
+  try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
 }
 
-function mostrar(){
-  vibrar(30);
-  const foto = document.getElementById("foto");
-  foto.style.display = "block";
-  foto.style.animation = "aparecerFoto 420ms ease-out forwards";
+/* ===== Laberinto ===== */
+const game = document.getElementById("game");
+const wrap = document.getElementById("wrap");
+const gameMsg = document.getElementById("gameMsg");
+
+const board = document.getElementById("board");
+const canvas = document.getElementById("maze");
+const ctx = canvas.getContext("2d");
+
+// 0 = camino, 1 = pared
+// Laberinto simple (15x11)
+const grid = [
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
+  [1,0,1,0,1,0,1,1,1,0,1,0,1,0,1],
+  [1,0,1,0,0,0,1,0,1,0,0,0,1,0,1],
+  [1,0,1,1,1,0,1,0,1,1,1,0,1,0,1],
+  [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
+  [1,1,1,0,1,1,1,1,1,0,1,1,1,0,1],
+  [1,0,0,0,0,0,1,0,0,0,0,0,1,0,1],
+  [1,0,1,1,1,0,1,0,1,1,1,0,1,0,1],
+  [1,0,0,0,1,0,0,0,1,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+];
+
+const rows = grid.length;
+const cols = grid[0].length;
+
+let cellW=0, cellH=0;
+
+// inicio y meta (en coordenadas de celda)
+const startCell = { r: 1, c: 1 };
+const goalCell  = { r: 9, c: 13 };
+
+// bola del jugador (en pixeles)
+let ball = { x:0, y:0, r:0 };
+let dragging = false;
+
+function resizeCanvas(){
+  const rect = board.getBoundingClientRect();
+  canvas.width = Math.floor(rect.width * devicePixelRatio);
+  canvas.height = Math.floor(rect.height * devicePixelRatio);
+
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+  cellW = rect.width / cols;
+  cellH = rect.height / rows;
+
+  ball.r = Math.min(cellW, cellH) * 0.28;
+
+  resetBall();
+  draw();
 }
 
-function pantallaCompleta(img){
-  vibrar(15);
-  if(img.requestFullscreen){ img.requestFullscreen(); }
-  else if(img.webkitRequestFullscreen){ img.webkitRequestFullscreen(); }
-  else if(img.msRequestFullscreen){ img.msRequestFullscreen(); }
+function cellCenter(r,c){
+  return {
+    x: (c + 0.5) * cellW,
+    y: (r + 0.5) * cellH
+  };
 }
+
+function resetBall(){
+  const p = cellCenter(startCell.r, startCell.c);
+  ball.x = p.x;
+  ball.y = p.y;
+  gameMsg.textContent = "";
+}
+
+function inWall(x,y){
+  const c = Math.floor(x / cellW);
+  const r = Math.floor(y / cellH);
+
+  if(r < 0 || r >= rows || c < 0 || c >= cols) return true;
+  return grid[r][c] === 1;
+}
+
+function reachedGoal(x,y){
+  const c = Math.floor(x / cellW);
+  const r = Math.floor(y / cellH);
+  return (r === goalCell.r && c === goalCell.c);
+}
+
+function draw(){
+  const rect = board.getBoundingClientRect();
+  ctx.clearRect(0,0,rect.width,rect.height);
+
+  // paredes
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      if(grid[r][c] === 1){
+        ctx.fillStyle = "rgba(255,255,255,0.22)";
+        ctx.fillRect(c*cellW, r*cellH, cellW, cellH);
+      }
+    }
+  }
+
+  // meta
+  ctx.fillStyle = "rgba(255,255,255,0.35)";
+  ctx.fillRect(goalCell.c*cellW, goalCell.r*cellH, cellW, cellH);
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.font = `${Math.floor(Math.min(cellW,cellH)*0.6)}px sans-serif`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const g = cellCenter(goalCell.r, goalCell.c);
+  ctx.fillText("🏁", g.x, g.y+1);
+
+  // bola
+  ctx.beginPath();
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.shadowColor = "rgba(255,255,255,0.35)";
+  ctx.shadowBlur = 14;
+  ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // mini “inicio”
+  const s = cellCenter(startCell.r, startCell.c);
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.font = `${Math.floor(Math.min(cellW,cellH)*0.55)}px sans-serif`;
+  ctx.fillText("⛳", s.x, s.y+1);
+}
+
+function pointerPos(ev){
+  const rect = board.getBoundingClientRect();
+  return {
+    x: ev.clientX - rect.left,
+    y: ev.clientY - rect.top
+  };
+}
+
+board.addEventListener("pointerdown", (ev)=>{
+  dragging = true;
+  board.setPointerCapture(ev.pointerId);
+});
+
+board.addEventListener("pointerup", ()=>{
+  dragging = false;
+});
+
+board.addEventListener("pointercancel", ()=>{
+  dragging = false;
+});
+
+board.addEventListener("pointermove", (ev)=>{
+  if(!dragging) return;
+
+  const p = pointerPos(ev);
+
+  // si intenta ir a pared -> reset
+  if(inWall(p.x, p.y)){
+    vibrar(18);
+    gameMsg.textContent = "¡Uy! 😈";
+    resetBall();
+    draw();
+    return;
+  }
+
+  ball.x = p.x;
+  ball.y = p.y;
+  draw();
+
+  if(reachedGoal(ball.x, ball.y)){
+    vibrar(25);
+    gameMsg.textContent = "¡Bien! 😍";
+    dragging = false;
+
+    setTimeout(()=>{
+      game.classList.add("hide");
+      wrap.classList.add("show");
+    }, 700);
+  }
+});
+
+window.addEventListener("resize", resizeCanvas);
+setTimeout(resizeCanvas, 50);
+
+/* ===== Abrir + corazones + foto ===== */
+const abrirBtn = document.getElementById("abrirBtn");
+const modal = document.getElementById("modal");
+const hearts = document.getElementById("hearts");
+const foto = document.getElementById("foto");
+
+abrirBtn.addEventListener("click", async ()=>{
+  vibrar(18);
+
+  const total = 5;
+  let salida = "";
+  for(let i=0;i<total;i++){
+    salida += "🤍 ";
+    hearts.innerHTML = salida.trim();
+    await new Promise(r=>setTimeout(r,340));
+  }
+
+  setTimeout(()=> modal.classList.add("open"), 200);
+});
+
+modal.addEventListener("click", ()=>{
+  modal.classList.remove("open");
+});
+
+foto.addEventListener("click", (e)=>{
+  e.stopPropagation();
+  if (foto.requestFullscreen) foto.requestFullscreen();
+  else if (foto.webkitRequestFullscreen) foto.webkitRequestFullscreen();
+  else if (foto.msRequestFullscreen) foto.msRequestFullscreen();
+});
 </script>
+
 </body>
 </html>
