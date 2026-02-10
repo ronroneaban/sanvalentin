@@ -52,7 +52,7 @@ body{
   font-size:clamp(14px, 3.8vw, 16px);
   opacity:0;
   transition:0.8s;
-  z-index:12;
+  z-index:35;
   pointer-events:none;
 }
 .caja-continuar.show{ opacity:1; }
@@ -95,17 +95,18 @@ body{
   overflow:hidden;
   touch-action:none;
 }
-.secret{
+
+/* Fondo suave detrás (sin emojis) */
+.backdrop{
   position:absolute;
   inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:64px;
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.14), rgba(255,255,255,0) 55%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.10), rgba(255,255,255,0) 58%);
   opacity:0.9;
-  user-select:none;
-  filter: drop-shadow(0 14px 30px rgba(0,0,0,0.25));
 }
+
 #fog{
   position:absolute;
   inset:0;
@@ -114,7 +115,13 @@ body{
   display:block;
   border-radius:22px;
 }
-.game-msg{ margin-top:14px; font-size:15px; opacity:0.92; min-height:22px; }
+
+.game-msg{
+  margin-top:14px;
+  font-size:15px;
+  opacity:0.92;
+  min-height:22px;
+}
 
 /* ===== Contenido ===== */
 .wrap{
@@ -184,17 +191,21 @@ body{
 
 <body>
 
+<!-- JUEGO: LIMPIAR VAHO -->
 <div class="game" id="game">
   <div class="game-box">
-    <h2 class="game-title">✨</h2>
+    <h2 class="game-title">Limpia la pantalla</h2>
+
     <div class="board" id="board">
-      <div class="secret">❤️‍🔥🐭</div>
+      <div class="backdrop"></div>
       <canvas id="fog"></canvas>
     </div>
+
     <div class="game-msg" id="gameMsg"></div>
   </div>
 </div>
 
+<!-- CONTENIDO REGALO -->
 <div class="wrap" id="wrap">
   <div class="caja">
     <button class="btn" id="abrirBtn">Abrir</button>
@@ -222,73 +233,149 @@ const board = document.getElementById("board");
 const fog = document.getElementById("fog");
 const ctx = fog.getContext("2d", { willReadFrequently:true });
 
-let drawing=false, cleared=0, unlocked=false;
+let drawing=false;
+let unlocked=false;
+
+/* Config */
+const BRUSH_R = 28;          // dedo un poquito más “gordo”
+const TARGET = 0.90;         // 90%
+let moveCounter = 0;
 
 function resizeFog(){
   const rect = board.getBoundingClientRect();
   fog.width = Math.floor(rect.width * devicePixelRatio);
   fog.height = Math.floor(rect.height * devicePixelRatio);
   ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+
+  unlocked = false;
+  msg.textContent = "";
   paintFog();
-  cleared=0; unlocked=false;
-  msg.textContent="";
 }
+
 function paintFog(){
   const rect = board.getBoundingClientRect();
-  ctx.globalCompositeOperation="source-over";
-  ctx.fillStyle="rgba(255,255,255,0.65)";
+  ctx.globalCompositeOperation = "source-over";
+
+  // vaho base
+  ctx.fillStyle = "rgba(255,255,255,0.72)";
   ctx.fillRect(0,0,rect.width,rect.height);
 
-  const g = ctx.createRadialGradient(rect.width*0.5, rect.height*0.35, 30, rect.width*0.5, rect.height*0.35, rect.width*0.8);
+  // textura suave (grano)
+  const img = ctx.getImageData(0,0,Math.floor(rect.width),Math.floor(rect.height));
+  const d = img.data;
+  for(let i=0;i<d.length;i+=4){
+    const n = (Math.random()*14)|0; // ruido leve
+    d[i] = Math.min(255, d[i] + n);
+    d[i+1] = Math.min(255, d[i+1] + n);
+    d[i+2] = Math.min(255, d[i+2] + n);
+    // alpha queda igual
+  }
+  ctx.putImageData(img,0,0);
+
+  // brillo suave
+  const g = ctx.createRadialGradient(rect.width*0.45, rect.height*0.35, 30,
+                                     rect.width*0.45, rect.height*0.35, rect.width*0.95);
   g.addColorStop(0, "rgba(255,255,255,0.18)");
   g.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle=g;
+  ctx.fillStyle = g;
   ctx.fillRect(0,0,rect.width,rect.height);
 }
+
 function pos(ev){
   const rect = board.getBoundingClientRect();
-  return { x: ev.clientX-rect.left, y: ev.clientY-rect.top };
+  return { x: ev.clientX - rect.left, y: ev.clientY - rect.top };
 }
-function eraseAt(x,y){
-  const r=26;
-  ctx.globalCompositeOperation="destination-out";
+
+/* ✅ borrado más realista: centro fuerte + bordes suaves */
+function eraseSoft(x,y){
+  // centro: borra fuerte
+  ctx.save();
+  ctx.globalCompositeOperation = "destination-out";
+
+  const grad = ctx.createRadialGradient(x,y, 0, x,y, BRUSH_R);
+  grad.addColorStop(0, "rgba(0,0,0,0.85)");
+  grad.addColorStop(0.55, "rgba(0,0,0,0.45)");
+  grad.addColorStop(1, "rgba(0,0,0,0.00)");
+
+  ctx.fillStyle = grad;
   ctx.beginPath();
-  ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.arc(x,y,BRUSH_R,0,Math.PI*2);
   ctx.fill();
-  ctx.globalCompositeOperation="source-over";
+
+  ctx.restore();
 }
-function checkUnlock(){
+
+/* % limpiado real */
+function clearedPercent(){
+  const rect = board.getBoundingClientRect();
+  const w = Math.floor(rect.width);
+  const h = Math.floor(rect.height);
+
+  const step = 4; // muestreo rápido
+  const img = ctx.getImageData(0,0,w,h).data;
+
+  let total = 0;
+  let cleared = 0;
+
+  for(let y=0; y<h; y+=step){
+    for(let x=0; x<w; x+=step){
+      const i = (y*w + x) * 4;
+      const a = img[i+3];
+      total++;
+      if(a < 30) cleared++;
+    }
+  }
+  return cleared / total;
+}
+
+function tryUnlock(){
   if(unlocked) return;
-  if(cleared>=36){
-    unlocked=true;
+
+  const p = clearedPercent();
+  const pct = Math.floor(p*100);
+
+  // muestra progreso hasta 89
+  msg.textContent = (pct < 90) ? (pct + "%") : "";
+
+  if(p >= TARGET){
+    unlocked = true;
     vibrar(25);
-    msg.textContent="😍";
+
+    // sin 😍, sin texto final: pasamos directo
     setTimeout(()=>{
       game.classList.add("hide");
       wrap.classList.add("show");
-      setTimeout(()=> continuarBox.classList.add("show"), 1500);
-    }, 650);
+    }, 420);
   }
 }
 
 board.addEventListener("pointerdown",(ev)=>{
   drawing=true;
   board.setPointerCapture(ev.pointerId);
-  const p=pos(ev);
-  eraseAt(p.x,p.y);
-  cleared++;
-  checkUnlock();
+  const p = pos(ev);
+  eraseSoft(p.x,p.y);
+  moveCounter++;
+  if(moveCounter % 6 === 0) tryUnlock();
 });
+
 board.addEventListener("pointermove",(ev)=>{
   if(!drawing) return;
-  const p=pos(ev);
-  eraseAt(p.x,p.y);
-  cleared++;
-  if(cleared%10===0) vibrar(8);
-  checkUnlock();
+  const p = pos(ev);
+  eraseSoft(p.x,p.y);
+  moveCounter++;
+
+  if(moveCounter % 16 === 0) vibrar(8);
+  if(moveCounter % 10 === 0) tryUnlock();
 });
-board.addEventListener("pointerup",()=> drawing=false);
-board.addEventListener("pointercancel",()=> drawing=false);
+
+board.addEventListener("pointerup",()=>{
+  drawing=false;
+  tryUnlock();
+});
+board.addEventListener("pointercancel",()=>{
+  drawing=false;
+  tryUnlock();
+});
 
 window.addEventListener("resize", resizeFog);
 setTimeout(resizeFog, 60);
@@ -297,7 +384,6 @@ setTimeout(resizeFog, 60);
 const abrirBtn = document.getElementById("abrirBtn");
 const modal = document.getElementById("modal");
 const hearts = document.getElementById("hearts");
-const foto = document.getElementById("foto");
 
 abrirBtn.addEventListener("click", async ()=>{
   vibrar(18);
@@ -307,17 +393,12 @@ abrirBtn.addEventListener("click", async ()=>{
     hearts.innerHTML = salida.trim();
     await new Promise(r=>setTimeout(r,340));
   }
+
   setTimeout(()=> modal.classList.add("open"), 200);
+  setTimeout(()=> continuarBox.classList.add("show"), 2600);
 });
 
 modal.addEventListener("click", ()=> modal.classList.remove("open"));
-
-foto.addEventListener("click", (e)=>{
-  e.stopPropagation();
-  if (foto.requestFullscreen) foto.requestFullscreen();
-  else if (foto.webkitRequestFullscreen) foto.webkitRequestFullscreen();
-  else if (foto.msRequestFullscreen) foto.msRequestFullscreen();
-});
 </script>
 
 </body>
