@@ -34,6 +34,29 @@ body{
   position:relative;
 }
 
+/* ===== “PARA CONTINUAR” (mismo estilo que principal) ===== */
+.caja-continuar{
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom: calc(22px + env(safe-area-inset-bottom));
+  width:92%;
+  max-width:520px;
+  padding:14px 22px;
+  border-radius:40px;
+  background:var(--glass);
+  backdrop-filter: blur(12px);
+  border:1px solid var(--border);
+  box-shadow:0 0 35px rgba(255,255,255,0.18);
+  text-align:center;
+  font-size:clamp(14px, 3.8vw, 16px);
+  opacity:0;
+  transition:0.8s;
+  z-index:12;
+  pointer-events:none;
+}
+.caja-continuar.show{ opacity:1; }
+
 /* ======== PANTALLA JUEGO ======== */
 .game{
   position:fixed;
@@ -78,13 +101,13 @@ body{
   overflow:hidden;
 }
 
-/* Animalitos despiste */
+/* Animalitos despiste (difuminados) */
 .decoy{
   position:absolute;
   font-size:22px;
-  opacity:0.95;
   user-select:none;
-  filter: drop-shadow(0 8px 14px rgba(0,0,0,0.25));
+  opacity:0.14;
+  filter: blur(1.3px) drop-shadow(0 10px 16px rgba(0,0,0,0.18));
   transform: translateZ(0);
 }
 
@@ -100,7 +123,7 @@ body{
   50%{ transform: translateY(-10px); opacity:0.9; }
 }
 
-/* ratón “camuflado” */
+/* ratón camuflado */
 .mouse{
   position:absolute;
   width:46px;
@@ -113,23 +136,23 @@ body{
   user-select:none;
 
   opacity:0.10;
+  filter: blur(1px);
   transform: scale(0.92);
   transition: opacity 220ms ease, transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
 }
 .mouse:active{ transform: scale(0.88); }
 
-/* si falla: un poquito más visible */
-.mouse.hint{ opacity:0.32; }
+/* hint */
+.mouse.hint{ opacity:0.30; filter: blur(0.4px); }
 
-/* cuando lo encuentra */
+/* found */
 .mouse.found{
   opacity:1;
+  filter: blur(0px);
   transform: scale(1.06);
   box-shadow: 0 0 26px rgba(255,255,255,0.35);
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.25));
 }
 
-/* mensajito */
 .game-msg{
   margin-top:14px;
   font-size:15px;
@@ -137,7 +160,7 @@ body{
   min-height:22px;
 }
 
-/* ======== CONTENIDO REGALO (Abrir) ======== */
+/* ======== CONTENIDO REGALO ======== */
 .wrap{
   width:100%;
   max-width:520px;
@@ -179,7 +202,7 @@ body{
   cursor:pointer;
 }
 
-/* Corazones blancos */
+/* Corazones */
 .hearts{
   margin-top:20px;
   font-size:22px;
@@ -228,19 +251,18 @@ body{
 
 <body>
 
-<!-- ===== PANTALLA 1: JUEGO ===== -->
+<!-- JUEGO -->
 <div class="game" id="game">
   <div class="game-box">
     <h2 class="game-title">Encuentra al 🐭</h2>
 
     <div class="board" id="board">
-      <!-- burbujas -->
       <div class="bubble" style="width:95px;height:95px;left:14px;top:28px;animation-delay:0s;"></div>
       <div class="bubble" style="width:70px;height:70px;left:220px;top:160px;animation-delay:1s;"></div>
       <div class="bubble" style="width:120px;height:120px;left:330px;top:42px;animation-delay:0.5s;"></div>
       <div class="bubble" style="width:80px;height:80px;left:120px;top:190px;animation-delay:1.3s;"></div>
 
-      <!-- animalitos despiste (puedes añadir/quitar los que quieras) -->
+      <!-- decoys -->
       <div class="decoy" style="left:22px; top:18px;">🐶</div>
       <div class="decoy" style="left:90px; top:40px;">🐱</div>
       <div class="decoy" style="left:160px; top:22px;">🐰</div>
@@ -259,15 +281,14 @@ body{
       <div class="decoy" style="left:360px; top:225px;">🦖</div>
       <div class="decoy" style="left:430px; top:210px;">🦉</div>
 
-      <!-- el ratón -->
-      <div class="mouse" id="mouse" title="🐭">🐭</div>
+      <div class="mouse" id="mouse">🐭</div>
     </div>
 
     <div class="game-msg" id="gameMsg"></div>
   </div>
 </div>
 
-<!-- ===== CONTENIDO REGALO ===== -->
+<!-- CONTENIDO -->
 <div class="wrap" id="wrap">
   <div class="caja">
     <button class="btn" id="abrirBtn">Abrir</button>
@@ -276,39 +297,32 @@ body{
 </div>
 
 <div class="modal" id="modal">
-  <!-- ✅ Pon aquí tu foto (nombre exacto) -->
   <img class="foto" id="foto" src="img1.jpg" alt="Foto" />
 </div>
 
-<script>
-function vibrar(ms){
-  try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
-}
+<!-- PARA CONTINUAR -->
+<div class="caja-continuar" id="continuarBox">
+  ❤️‍🔥 Para continuar con la sorpresa, abre la CAJA 2
+</div>
 
-/* ===== Juego del ratón (se escapa 2 veces) ===== */
+<script>
+function vibrar(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+
 const board = document.getElementById("board");
 const mouse = document.getElementById("mouse");
 const game = document.getElementById("game");
 const gameMsg = document.getElementById("gameMsg");
 const wrap = document.getElementById("wrap");
-
-let escapesLeft = 2; // ✅ se escapa 2 veces
+const continuarBox = document.getElementById("continuarBox");
 
 function placeMouseRandom(){
   const rect = board.getBoundingClientRect();
-  const pad = 16;
-  const size = 46;
-
+  const pad = 16, size = 46;
   const maxX = rect.width - size - pad;
   const maxY = rect.height - size - pad;
-
-  const x = pad + Math.random()*maxX;
-  const y = pad + Math.random()*maxY;
-
-  mouse.style.left = x + "px";
-  mouse.style.top  = y + "px";
+  mouse.style.left = (pad + Math.random()*maxX) + "px";
+  mouse.style.top  = (pad + Math.random()*maxY) + "px";
 }
-
 placeMouseRandom();
 
 board.addEventListener("click", (e)=>{
@@ -322,25 +336,6 @@ board.addEventListener("click", (e)=>{
 
 mouse.addEventListener("click", (e)=>{
   e.stopPropagation();
-
-  if(escapesLeft > 0){
-    escapesLeft--;
-    vibrar(18);
-
-    // mini “se escapa”
-    gameMsg.textContent = (escapesLeft === 1) ? "¡Uy! se escapó… 😏" : "¡Otra vez! 😈";
-
-    // lo hacemos un pelín visible un segundo para que no sea frustrante
-    mouse.classList.add("hint");
-    setTimeout(()=> mouse.classList.remove("hint"), 800);
-
-    // moverlo a otro sitio
-    placeMouseRandom();
-    setTimeout(()=> gameMsg.textContent = "", 900);
-    return;
-  }
-
-  // tercera vez: lo “atrapa”
   vibrar(22);
   mouse.classList.add("found");
   gameMsg.textContent = "¡Aaaaahí estabas! 😍";
@@ -348,10 +343,11 @@ mouse.addEventListener("click", (e)=>{
   setTimeout(()=>{
     game.classList.add("hide");
     wrap.classList.add("show");
-  }, 900);
+    setTimeout(()=> continuarBox.classList.add("show"), 1500);
+  }, 850);
 });
 
-/* ===== Abrir + corazones + foto ===== */
+/* Abrir + corazones + foto */
 const abrirBtn = document.getElementById("abrirBtn");
 const modal = document.getElementById("modal");
 const hearts = document.getElementById("hearts");
@@ -359,21 +355,16 @@ const foto = document.getElementById("foto");
 
 abrirBtn.addEventListener("click", async ()=>{
   vibrar(18);
-
-  const total = 5;
   let salida = "";
-  for(let i=0;i<total;i++){
+  for(let i=0;i<5;i++){
     salida += "🤍 ";
     hearts.innerHTML = salida.trim();
     await new Promise(r=>setTimeout(r,340));
   }
-
   setTimeout(()=> modal.classList.add("open"), 200);
 });
 
-modal.addEventListener("click", ()=>{
-  modal.classList.remove("open");
-});
+modal.addEventListener("click", ()=> modal.classList.remove("open"));
 
 foto.addEventListener("click", (e)=>{
   e.stopPropagation();
