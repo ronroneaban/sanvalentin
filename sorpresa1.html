@@ -61,32 +61,25 @@ body{
   cursor:pointer;
 }
 
-/* Barra corazones (BLANCOS) */
+/* Corazones blancos */
 .hearts{
   margin-top:20px;
   font-size:22px;
   letter-spacing:6px;
   opacity:0.65;
-  transition:opacity 0.3s;
-  user-select:none;
 }
 
-.hearts.active{
-  opacity:1;
-}
-
-/* Modal centrado */
+/* Modal fondo */
 .modal{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.55);
   backdrop-filter: blur(8px);
   display:flex;
-  align-items:center;      /* ✅ CENTRADO VERTICAL */
-  justify-content:center;  /* ✅ CENTRADO HORIZONTAL */
+  align-items:center;
+  justify-content:center;
   padding:18px;
   z-index:30;
-
   opacity:0;
   pointer-events:none;
   transition: opacity 260ms ease;
@@ -97,21 +90,20 @@ body{
   pointer-events:auto;
 }
 
-/* Foto estilo carta: entra desde abajo pero acaba centrada */
+/* Imagen */
 .foto{
   max-width:92vw;
   max-height:86vh;
   border-radius:22px;
   border:1px solid rgba(255,255,255,0.18);
   box-shadow: 0 18px 60px rgba(0,0,0,0.55);
-
-  transform: translateY(80px); /* entra desde abajo */
+  transform: translateY(80px);
   opacity:0;
   transition: transform 520ms ease, opacity 520ms ease;
 }
 
 .modal.open .foto{
-  transform: translateY(0); /* ✅ queda centrada */
+  transform: translateY(0);
   opacity:1;
 }
 </style>
@@ -121,47 +113,56 @@ body{
 
 <div class="caja">
   <button class="btn" id="abrirBtn">Abrir</button>
-
-  <div class="hearts" id="hearts">
-    🤍 🤍 🤍 🤍 🤍
-  </div>
+  <div class="hearts" id="hearts">🤍 🤍 🤍 🤍 🤍</div>
 </div>
 
 <div class="modal" id="modal">
-  <!-- ✅ PON AQUÍ TU FOTO REAL -->
-  <img class="foto" src="img1.jpg" alt="Foto" />
+  <img class="foto" id="foto" src="img1.jpg" alt="Foto" />
 </div>
 
 <script>
 const abrirBtn = document.getElementById("abrirBtn");
 const modal = document.getElementById("modal");
 const hearts = document.getElementById("hearts");
+const foto = document.getElementById("foto");
 
+/* Vibración */
 function vibrar(ms){
   try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
 }
 
+/* Abrir */
 abrirBtn.addEventListener("click", async () => {
   vibrar(18);
 
-  // corazones blancos
   const total = 5;
-  hearts.classList.add("active");
-  hearts.innerHTML = "🤍 🤍 🤍 🤍 🤍";
-
   let salida = "";
+
   for(let i=0;i<total;i++){
     salida += "🤍 ";
     hearts.innerHTML = salida.trim();
-    await new Promise(r=>setTimeout(r,320)); // ✅ más lento (antes 220)
+    await new Promise(r=>setTimeout(r,320));
   }
 
-  setTimeout(()=> modal.classList.add("open"), 260);
+  setTimeout(()=> modal.classList.add("open"), 200);
 });
 
-// cerrar tocando cualquier parte
+/* Cerrar tocando fondo */
 modal.addEventListener("click", ()=>{
   modal.classList.remove("open");
+});
+
+/* 👉 PANTALLA COMPLETA + ZOOM */
+foto.addEventListener("click", (e)=>{
+  e.stopPropagation();
+
+  if (foto.requestFullscreen) {
+    foto.requestFullscreen();
+  } else if (foto.webkitRequestFullscreen) {
+    foto.webkitRequestFullscreen();
+  } else if (foto.msRequestFullscreen) {
+    foto.msRequestFullscreen();
+  }
 });
 </script>
 
